@@ -2,39 +2,59 @@ package com.mauriciobenigno.secureway
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
+import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.TileOverlayOptions
+import com.google.android.material.navigation.NavigationView
 import com.google.maps.android.heatmaps.HeatmapTileProvider
 import com.google.maps.android.heatmaps.WeightedLatLng
+
 import org.json.JSONArray
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var mMap: GoogleMap
+
+    private var toolbar: Toolbar? = null
+    private var drawerLayout: DrawerLayout? = null
+    private var navigationView: NavigationView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        drawerLayout = findViewById(R.id.drawerLayout)
+
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.open_drawer,
+            R.string.close_drawer
+        )
+        drawerLayout!!.addDrawerListener(toggle)
+
+        toggle.syncState()
+
+        navigationView = findViewById(R.id.navView);
+        navigationView!!.setNavigationItemSelectedListener(this);
+
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     override fun onMapReady(googleMap: GoogleMap) {
         val data = generateHeatMapData()
 
@@ -44,17 +64,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .maxIntensity(1000.0) // set the maximum intensity
             .build()
 
-        googleMap?.addTileOverlay(TileOverlayOptions().tileProvider(heatMapProvider))
+        googleMap.addTileOverlay(TileOverlayOptions().tileProvider(heatMapProvider))
 
         val indiaLatLng = LatLng(20.5937, 78.9629)
-        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(indiaLatLng, 5f))
-        /*
-        mMap = googleMap
-
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))*/
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(indiaLatLng, 5f))
     }
 
     private fun generateHeatMapData(): ArrayList<WeightedLatLng> {
@@ -86,6 +99,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             e.printStackTrace()
             return null
         }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_item_one -> {
+                Toast.makeText(this, "Menu 1", Toast.LENGTH_SHORT).show()
+            }
+            R.id.nav_item_two -> {
+                Toast.makeText(this, "Menu 2", Toast.LENGTH_SHORT).show()
+            }
+            R.id.nav_item_three -> {
+                Toast.makeText(this, "Menu 3", Toast.LENGTH_SHORT).show()
+            }
+            R.id.nav_item_four -> {
+                Toast.makeText(this, "Menu 4", Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                Toast.makeText(this, "Menu Default", Toast.LENGTH_SHORT).show()
+            }
+        }
+        drawerLayout?.closeDrawer(GravityCompat.START)
+
+        return true
     }
 
 }
