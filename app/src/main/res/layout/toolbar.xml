@@ -12,4 +12,6 @@
         android:background="?attr/colorPrimary"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
+    <include layout="@layout/content_main" />
+
 </LinearLayout>
