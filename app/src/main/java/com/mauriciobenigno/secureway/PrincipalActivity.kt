@@ -2,6 +2,7 @@ package com.mauriciobenigno.secureway
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +20,8 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     private var toolbar: Toolbar? = null
     private var drawerLayout: DrawerLayout? = null
     private var navigationView: NavigationView? = null
+    private var fragmentMap: MapViewFragment? = null
+    private var fragmentAtual: Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,18 +45,29 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         navigationView = findViewById(R.id.navView);
         navigationView!!.setNavigationItemSelectedListener(this);
 
+        // Inicializar Framents
+        fragmentMap = MapViewFragment()
+        fragmentAtual = fragmentMap
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (fragmentAtual != null) {
+            val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+            ft.replace(R.id.container_frame, fragmentAtual!!)
+            ft.commit()
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        var fragment: Fragment? = null
         when (item.itemId) {
             R.id.nav_item_one -> {
-                fragment = MapViewFragment()
+                fragmentAtual = fragmentMap
                 Toast.makeText(this, "Menu 1 - mapa", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_item_two -> {
-                fragment = MapViewFragment()
-                Toast.makeText(this, "Menu 2", Toast.LENGTH_SHORT).show()
+                fragmentAtual = fragmentMap
+                Toast.makeText(this, "Menu 2 - Mesmo mapa", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_item_three -> {
                 Toast.makeText(this, "Menu 3", Toast.LENGTH_SHORT).show()
@@ -65,14 +79,41 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 Toast.makeText(this, "Menu Default", Toast.LENGTH_SHORT).show()
             }
         }
-        if (fragment != null) {
+        if (fragmentAtual != null) {
             val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-            ft.replace(R.id.container_frame, fragment)
+            ft.replace(R.id.container_frame, fragmentAtual!!)
             ft.commit()
         }
         drawerLayout?.closeDrawer(GravityCompat.START)
 
         return true
     }
+
+/*
+    override fun onBackPressed() {
+        val drawer =
+            findViewById<View>(android.R.id.drawer_layout) as DrawerLayout
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(android.R.menu.main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        val id = item.itemId
+        return if (id == android.R.id.action_settings) {
+            true
+        } else super.onOptionsItemSelected(item)
+    }*/
 
 }
