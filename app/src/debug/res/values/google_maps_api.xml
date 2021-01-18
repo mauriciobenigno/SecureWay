@@ -4,7 +4,7 @@
 
     To get one, follow this link, follow the directions and press "Create" at the end:
 
-    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=EF:52:0E:EE:D1:2A:89:D5:27:92:FC:3A:46:B1:16:EC:64:92:54:A3%3Bcom.mauriciobenigno.secureway
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=EF:52:0E:EE:D1:2A:89:D5:27:92:FC:3A:46:B1:16:EC:64:92:54:A3%3Bbr.com.mauriciobenigno.securew
 
     You can also add your credentials to an existing key, using these values:
 
@@ -13,7 +13,7 @@
 
     SHA-1 certificate fingerprint:
     EF:52:0E:EE:D1:2A:89:D5:27:92:FC:3A:46:B1:16:EC:64:92:54:A3
-
+    EF:52:0E:EE:D1:2A:89:D5:27:92:FC:3A:46:B1:16:EC:64:92:54:A3
     Alternatively, follow the directions here:
     https://developers.google.com/maps/documentation/android/start#get-key
 
