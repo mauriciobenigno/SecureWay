@@ -10,6 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
+        android:gravity="center"
+        android:textAlignment="center"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <include layout="@layout/content_main" />
