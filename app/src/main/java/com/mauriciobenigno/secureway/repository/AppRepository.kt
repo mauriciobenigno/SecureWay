@@ -3,9 +3,17 @@ package com.mauriciobenigno.secureway.repository
 import android.content.Context
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
+import com.google.gson.Gson
 import com.google.maps.android.heatmaps.WeightedLatLng
 import com.mauriciobenigno.secureway.database.AppDatabase
+import com.mauriciobenigno.secureway.model.District
+import com.mauriciobenigno.secureway.service.ApiService
+import org.jetbrains.anko.doAsync
 import org.json.JSONArray
+
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class AppRepository(context: Context) {
@@ -14,6 +22,18 @@ class AppRepository(context: Context) {
 
     fun getAllLocais() = database.Dao().getAllLocations()
 
+    fun getLiveAllDistric() = database.Dao().getLiveAllDistrict()
+
+    fun getHeatMapData(): ArrayList<WeightedLatLng> {
+        val data = ArrayList<WeightedLatLng>()
+        val districts = database.Dao().getAllDistrict()
+        districts.forEach {
+            if(it.density != 0.0)
+                data.add(WeightedLatLng(LatLng(it.lat, it.lon), it.density))
+        }
+        return data
+    }
+/*
     fun generateHeatMapData(context: Context): ArrayList<WeightedLatLng> {
         val data = ArrayList<WeightedLatLng>()
 
@@ -33,16 +53,31 @@ class AppRepository(context: Context) {
         }
 
         return data
-    }
+    }*/
 
-    fun getJsonDataFromAsset(context: Context,fileName: String): JSONArray? {
-        try {
-            val jsonString = context.assets.open(fileName).bufferedReader().use { it.readText() }
-            return JSONArray(jsonString)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return null
-        }
+    fun fetchLocationsFromServer() {
+        val request = ApiService.getEndpoints()
+        request.getAllDistricts().enqueue(object : Callback<List<District>> {
+            override fun onFailure(call: Call<List<District>>, t: Throwable) {
+                Log.wtf("Falha", "Requisição Falhou!")
+            }
+
+            override fun onResponse(call: Call<List<District>>, response: Response<List<District>>) {
+                if (response.code() == 200) {
+                    val resultado = response.body()
+                    try {
+                        resultado?.let { districts ->
+                            doAsync {
+                                database.Dao().insertAllDistricts(districts)
+                            }
+                        }
+                    }catch (e: Exception){
+                        Log.e("ErroAPI",e.message!!)
+                    }
+
+                }
+            }
+        })
     }
 
     fun fetchDataFromServer() {

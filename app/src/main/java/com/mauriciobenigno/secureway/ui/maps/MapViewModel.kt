@@ -10,16 +10,18 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 
     private val appRepository = AppRepository(application)
 
-    /*init {
-        appRepository.fetchDataFromServer()
+    init {
+        appRepository.fetchLocationsFromServer()
     }
 
     fun refreshData() {
-        appRepository.fetchDataFromServer()
-    }*/
+        appRepository.fetchLocationsFromServer()
+    }
+
+    fun getLiveAllDistrict() = appRepository.getLiveAllDistric()
 
 
-    fun generateHeatMapData(context: Context): ArrayList<WeightedLatLng> {
-        return appRepository.generateHeatMapData(context)
+    fun getHeatMapData(): ArrayList<WeightedLatLng> {
+        return appRepository.getHeatMapData()
     }
 }

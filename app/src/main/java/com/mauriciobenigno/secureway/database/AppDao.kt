@@ -2,6 +2,7 @@ package com.mauriciobenigno.secureway.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.mauriciobenigno.secureway.model.District
 import com.mauriciobenigno.secureway.model.Local
 
 @Dao
@@ -10,6 +11,14 @@ interface AppDao {
     @Query("select * from sw_local")
     fun getAllLocations() : List<Local>
 
+    @Query("select * from sw_district")
+    fun getAllDistrict() : List<District>
+
+    @Query("select * from sw_district")
+    fun getLiveAllDistrict() : LiveData<List<District>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllDistricts(districts: List<District>)
     /*@Query("select * from mxsprodut")
     fun getAllLiveProducts() : LiveData<List<Produto>>
 
