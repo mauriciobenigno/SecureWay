@@ -33,6 +33,28 @@ class AppRepository(context: Context) {
         }
         return data
     }
+
+    fun saveSaveOnServer(district: District) {
+        //val request = ApiService.getEndpoints()
+        /*request.saveReport(district).enqueue(
+            object : Callback<District> {
+                override fun onFailure(call: Call<District>, t: Throwable) {
+                    Log.e("Erro", "Erro ao cadastrar")
+                }
+
+                override fun onResponse(call: Call<District>, response: Response<District>) {
+                    if(response.code() == 201) {
+                        response.body()?.let {
+                            doAsync {
+                               // database.Dao().addSingleProduct(it)
+                            }
+                        }
+                    }
+                }
+            }
+        )*/
+        database.Dao().insertDistrict(district)
+    }
 /*
     fun generateHeatMapData(context: Context): ArrayList<WeightedLatLng> {
         val data = ArrayList<WeightedLatLng>()

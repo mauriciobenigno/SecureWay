@@ -2,18 +2,22 @@ package com.mauriciobenigno.secureway.ui
 
 
 import android.Manifest
+import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager
+import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.*
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -25,7 +29,7 @@ import com.google.android.gms.maps.model.TileOverlayOptions
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.maps.android.heatmaps.HeatmapTileProvider
 import com.mauriciobenigno.secureway.R
-import kotlinx.android.synthetic.main.fragment_maps.*
+import com.mauriciobenigno.secureway.model.District
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -36,6 +40,9 @@ class MapViewFragment : Fragment() {
 
     var mMapView: MapView? = null
     private var googleMap: GoogleMap? = null
+    private var mLocationManager: LocationManager? = null
+    private var mLocation: Location? = null
+    private var mAddress: Address? = null
     private var searchView: SearchView? = null
     private var fabButton: ExtendedFloatingActionButton? = null
     private var marker: Marker? = null
@@ -53,8 +60,6 @@ class MapViewFragment : Fragment() {
         mMapView = rootView.findViewById(R.id.mapView)
         mMapView!!.onCreate(savedInstanceState)
 
-
-
         searchView = rootView.findViewById(R.id.edtPesquisa)
 
         searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -62,20 +67,8 @@ class MapViewFragment : Fragment() {
                 val locationString = searchView!!.query.toString()
                 if (!locationString.equals("")) {
                     try {
-                        val address =
-                            Geocoder(requireActivity().applicationContext).getFromLocationName(
-                                locationString,
-                                1
-                            )
-                        googleMap!!.animateCamera(
-                            CameraUpdateFactory.newLatLngZoom(
-                                LatLng(
-                                    address.get(
-                                        0
-                                    ).getLatitude(), address.get(0).getLongitude()
-                                ), 15.0f
-                            )
-                        )
+                        mAddress = Geocoder(requireActivity().applicationContext).getFromLocationName(locationString, 1)[0]
+                        googleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(mAddress!!.latitude, mAddress!!.longitude), 15.0f))
                     } catch (e: java.lang.Exception) {
                         e.stackTrace
                     }
@@ -97,6 +90,9 @@ class MapViewFragment : Fragment() {
                 override fun onCameraIdle() {
                     if (mMarkerAtivo) {
                         val target: LatLng = googleMap!!.cameraPosition.target
+                        // Atualizando lugar
+                        mAddress = Geocoder(requireActivity().applicationContext).getFromLocation(target.latitude,target.longitude, 1)[0]
+                        // Atualizando marker
                         if (marker != null) {
                             marker!!.remove()
                             marker = googleMap!!.addMarker(
@@ -142,9 +138,67 @@ class MapViewFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
 
         fabButton!!.setOnClickListener {
-            doAsync {
-                viewModel.refreshData()
+
+            try {
+                var descricao = ""
+                if(mAddress != null){
+                    if (mAddress!!.getThoroughfare() != null) {
+                        descricao = descricao + "<b>" + "Endereço: " + "</b>" + mAddress!!.getThoroughfare() + "<br>";
+                    } else {
+                        mAddress!!.setThoroughfare("");
+                    }
+
+                    if (mAddress!!.getSubThoroughfare() != null) {
+                        descricao = descricao + "<b>" + "Numero: " + "</b>" + mAddress!!.getSubThoroughfare() + "<br>";
+                    } else {
+                        mAddress!!.setSubThoroughfare("");
+                    }
+
+                    if (mAddress!!.getSubLocality() != null) {
+                        descricao = descricao + "<b>" + "Bairro: " + "</b>" + mAddress!!.getSubLocality() + "<br>";
+                    } else {
+                        mAddress!!.setSubLocality("");
+                    }
+
+                    if (mAddress!!.getLocality() != null) {
+                        descricao = descricao + "<b>" + "Município: " + "</b>" + mAddress!!.getLocality() + "<br>";
+                    } else {
+                        mAddress!!.setLocality("");
+                    }
+
+                    if (mAddress!!.getAdminArea() != null && mAddress!!.getAdminArea().length >= 2) {
+                        descricao = descricao + "<b>" + "Estado: " + "</b>" + mAddress!!.getAdminArea() + "<br>";
+                    } else {
+                        mAddress!!.setAdminArea("");
+                    }
+                    if (mAddress!!.getPostalCode() != null && mAddress!!.getPostalCode().isNotEmpty()) {
+                        descricao = descricao + "<b>" + "CEP: " + "</b>" + mAddress!!.getPostalCode() + "<br>";
+                    } else {
+                        mAddress!!.setPostalCode("");
+                    }
+                }
+
+
+                val builder = AlertDialog.Builder(requireContext())
+                builder.setTitle("Reportar o seguinte endereço? ")
+                    .setMessage(Html.fromHtml(descricao))
+                    .setNegativeButton("Não", null)
+                    .setPositiveButton("Sim") { dialog, id ->
+                        val district = District(mAddress!!.getSubThoroughfare().toString(),mAddress!!.getSubLocality(),673.0,mAddress!!.latitude,mAddress!!.longitude)
+                        doAsync {
+                            viewModel.saveHeapPoint(district)
+                            uiThread {
+                                loadHeatMap(false)
+                            }
+                        }
+                    }
+                val alert = builder.create()
+                alert.show()
             }
+            catch (e : Exception){
+                Log.e("ErroGeocoder", e.message)
+            }
+
         }
         loadHeatMap()
     }
@@ -181,7 +235,13 @@ class MapViewFragment : Fragment() {
         val id = item.itemId
         when(id) {
             R.id.action_my_location -> {
-                googleMap!!.isMyLocationEnabled = true
+                val location = getLastKnownLocation()
+                if (location != null) {
+                    mLocation = getLastKnownLocation()
+                    mAddress = Geocoder(requireActivity().applicationContext).getFromLocation(mLocation!!.latitude, mLocation!!.longitude,1)[0]
+                    googleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 15.0f))
+                }
+
             }
             R.id.action_view_marker -> {
                 if (mMarkerAtivo) {
@@ -209,8 +269,22 @@ class MapViewFragment : Fragment() {
         marker!!.remove()
     }
 
+    private fun getLastKnownLocation(): Location? {
+        mLocationManager =
+            requireActivity().applicationContext.getSystemService(LOCATION_SERVICE) as LocationManager
+        val providers = mLocationManager!!.getProviders(true)
+        var bestLocation: Location? = null
+        for (provider in providers) {
+            val l = mLocationManager!!.getLastKnownLocation(provider) ?: continue
+            if (bestLocation == null || l.accuracy < bestLocation.accuracy) {
+                bestLocation = l
+            }
+        }
+        return bestLocation
+    }
 
-    fun loadHeatMap(){
+
+    fun loadHeatMap(moveToIndia: Boolean = true){
         try {
             doAsync {
                 // For showing a move to my location button
@@ -235,8 +309,11 @@ class MapViewFragment : Fragment() {
                 uiThread {
                     googleMap!!.addTileOverlay(TileOverlayOptions().tileProvider(heatMapProvider))
 
-                    val indiaLatLng = LatLng(20.5937, 78.9629)
-                    googleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(indiaLatLng, 5f))
+                    if(moveToIndia){
+                        val indiaLatLng = LatLng(20.5937, 78.9629)
+                        googleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(indiaLatLng, 5f))
+                    }
+
                 }
             }
         }

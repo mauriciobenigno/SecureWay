@@ -1,4 +1,4 @@
-package com.mauriciobenigno.secureway
+package com.mauriciobenigno.secureway.ui.activity
 
 import android.os.Bundle
 import android.view.Menu
@@ -13,6 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.navigation.NavigationView
+import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.ui.MapViewFragment
 
 

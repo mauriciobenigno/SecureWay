@@ -19,6 +19,10 @@ interface AppDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllDistricts(districts: List<District>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertDistrict(district: District)
+
     /*@Query("select * from mxsprodut")
     fun getAllLiveProducts() : LiveData<List<Produto>>
 

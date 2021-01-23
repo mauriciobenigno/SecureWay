@@ -4,6 +4,10 @@
     package="com.mauriciobenigno.secureway">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -15,7 +19,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
-        <activity android:name=".ui.intro.SplashActivity"
+        <activity
+            android:name=".ui.activity.intro.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,10 +34,9 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".PrincipalActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_maps">
-        </activity>
+            android:name=".ui.activity.PrincipalActivity"
+            android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
