@@ -5,6 +5,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -89,18 +90,23 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         return true
     }
 
-/*
+
     override fun onBackPressed() {
-        val drawer =
-            findViewById<View>(android.R.id.drawer_layout) as DrawerLayout
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START)
+        if (drawerLayout!!.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout!!.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage("Você deseja sair do aplicativo?")
+                    .setNegativeButton("Não", null)
+                    .setPositiveButton("Sim") { dialog, id ->
+                        super.onBackPressed()
+                    }
+                val alert = builder.create()
+                alert.show()
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(android.R.menu.main, menu)
         return true

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_header"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
     android:clickable="true"
     android:focusable="true"
@@ -13,18 +13,54 @@
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
-        android:id="@+id/nav_header_imageView"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@mipmap/ic_launcher" />
-
-    <TextView
-        android:id="@+id/nav_header_textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:id="@+id/drawer_info_logado"
+        android:visibility="gone"
+        android:layout_marginTop="16dp"
         android:paddingTop="16dp"
-        android:text="AndroidPro"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+        <ImageView
+            android:paddingTop="8dp"
+            android:id="@+id/nav_header_imageView"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/nav_header_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="Apelido de Teste"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+        <TextView
+            android:id="@+id/nav_user_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="(99)98765-4321"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/drawer_info_deslogado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Toque aqui se logar/cadastrar!"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </LinearLayout>
