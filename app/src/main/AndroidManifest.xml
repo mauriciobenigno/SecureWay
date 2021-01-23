@@ -15,7 +15,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
-        <activity android:name=".ui.intro.SplashActivity">
+        <activity android:name=".ui.intro.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,6 +30,7 @@
 
         <activity
             android:name=".PrincipalActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_maps">
         </activity>
     </application>

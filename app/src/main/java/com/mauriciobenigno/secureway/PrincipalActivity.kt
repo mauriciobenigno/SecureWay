@@ -1,8 +1,8 @@
 package com.mauriciobenigno.secureway
 
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -106,20 +106,14 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         }
     }
 
-    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(android.R.menu.main, menu)
-        return true
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        return super.onCreateOptionsMenu(menu)
     }
 
+
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-        return if (id == android.R.id.action_settings) {
-            true
-        } else super.onOptionsItemSelected(item)
-    }*/
+        return super.onOptionsItemSelected(item)
+    }
 
 }

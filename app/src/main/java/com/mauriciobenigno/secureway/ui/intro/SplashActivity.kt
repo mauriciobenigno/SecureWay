@@ -12,7 +12,7 @@ class SplashActivity : AppCompatActivity() , Runnable {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         val handler = Handler()
-        handler.postDelayed(this, 2000)
+        handler.postDelayed(this, 1000)
     }
 
     override fun run() {
