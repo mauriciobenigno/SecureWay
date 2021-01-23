@@ -1,10 +1,10 @@
-package com.mauriciobenigno.secureway.ui.intro
+package com.mauriciobenigno.secureway.ui.activity.intro
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
-import com.mauriciobenigno.secureway.PrincipalActivity
+import com.mauriciobenigno.secureway.ui.activity.PrincipalActivity
 import com.mauriciobenigno.secureway.R
 
 class SplashActivity : AppCompatActivity() , Runnable {
