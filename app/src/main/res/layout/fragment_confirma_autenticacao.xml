@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.login.ConfirmaAutenticacaoFragment">
+
+   <ScrollView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:orientation="vertical">
+
+
+           <TextView
+               android:id="@+id/textView"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:text="TESTE1" />
+
+           <TextView
+               android:id="@+id/textView2"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:text="TESTE1" />
+
+           <TextView
+               android:id="@+id/textView3"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:text="TESTE1" />
+
+           <TextView
+               android:id="@+id/textView4"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:text="TESTE1" />
+
+           <TextView
+               android:id="@+id/textView5"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:text="TESTE1" />
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="30dp"
+               android:gravity="center"
+               android:orientation="horizontal">
+
+
+               <EditText
+                   android:id="@+id/edtCode1"
+                   android:layout_width="40dp"
+                   android:layout_height="45dp"
+                   android:layout_marginStart="4dp"
+                   android:gravity="center"
+                   android:imeOptions="actionNext"
+                   android:inputType="number"
+                   android:maxLength="1"
+                   android:textSize="24sp"/>
+
+               <EditText
+                   android:id="@+id/edtCode2"
+                   android:layout_width="40dp"
+                   android:layout_height="45dp"
+                   android:layout_marginStart="4dp"
+                   android:gravity="center"
+                   android:imeOptions="actionNext"
+                   android:inputType="number"
+                   android:maxLength="1"
+                   android:textSize="24sp"/>
+
+               <EditText
+                   android:id="@+id/edtCode3"
+                   android:layout_width="40dp"
+                   android:layout_height="45dp"
+                   android:layout_marginStart="4dp"
+                   android:gravity="center"
+                   android:imeOptions="actionNext"
+                   android:inputType="number"
+                   android:maxLength="1"
+                   android:textSize="24sp"/>
+               <EditText
+                   android:id="@+id/edtCode4"
+                   android:layout_width="40dp"
+                   android:layout_height="45dp"
+                   android:layout_marginStart="4dp"
+                   android:gravity="center"
+                   android:imeOptions="actionNext"
+                   android:inputType="number"
+                   android:maxLength="1"
+                   android:textSize="24sp"/>
+
+               <EditText
+                   android:id="@+id/edtCode5"
+                   android:layout_width="40dp"
+                   android:layout_height="45dp"
+                   android:layout_marginStart="4dp"
+                   android:gravity="center"
+                   android:imeOptions="actionNext"
+                   android:inputType="number"
+                   android:maxLength="1"
+                   android:textSize="24sp"/>
+
+               <EditText
+                   android:id="@+id/edtCode6"
+                   android:layout_width="40dp"
+                   android:layout_height="45dp"
+                   android:layout_marginStart="4dp"
+                   android:gravity="center"
+                   android:imeOptions="actionNext"
+                   android:inputType="number"
+                   android:maxLength="1"
+                   android:textSize="24sp"/>
+
+           </LinearLayout>
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent">
+
+               <TextView
+                   android:id="@+id/textView6"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:text="Se não chegar sms toque aqui." />
+           </LinearLayout>
+       </LinearLayout>
+   </ScrollView>
+
+</FrameLayout>

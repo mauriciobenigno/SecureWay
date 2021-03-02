@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "126079631966",
+    "project_id": "securewayapp",
+    "storage_bucket": "securewayapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:126079631966:android:46111f16f44410361e6acf",
+        "android_client_info": {
+          "package_name": "com.mauriciobenigno.secureway"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "126079631966-ts21plo6argprpqoq8vs11kesug3sm2o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mauriciobenigno.secureway",
+            "certificate_hash": "ef520eeed12a89d52792fc3a46b116ec649254a3"
+          }
+        },
+        {
+          "client_id": "126079631966-c2bjpgob3v3bbh3oqpdg7ugo4rt0puv6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDE8yOiBQdUUcJvAiXXCSikIq0FVEiNync"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "126079631966-c2bjpgob3v3bbh3oqpdg7ugo4rt0puv6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

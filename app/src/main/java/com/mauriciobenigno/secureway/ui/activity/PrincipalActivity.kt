@@ -13,6 +13,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.ui.MapViewFragment
 
@@ -77,8 +79,13 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             R.id.nav_item_four -> {
                 Toast.makeText(this, "Menu 4", Toast.LENGTH_SHORT).show()
             }
+            R.id.nav_item_sair -> {
+                Firebase.auth.signOut()
+                Toast.makeText(this, "Saindo da conta", Toast.LENGTH_SHORT).show()
+
+            }
             else -> {
-                Toast.makeText(this, "Menu Default", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Menu default", Toast.LENGTH_SHORT).show()
             }
         }
         if (fragmentAtual != null) {

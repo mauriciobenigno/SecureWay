@@ -3,6 +3,7 @@ package com.mauriciobenigno.secureway.ui
 
 import android.Manifest
 import android.content.Context.LOCATION_SERVICE
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -26,10 +27,15 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.TileOverlayOptions
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.google.maps.android.heatmaps.HeatmapTileProvider
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.model.District
+import com.mauriciobenigno.secureway.ui.activity.autenticacao.AutenticacaoActivity
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -90,8 +96,15 @@ class MapViewFragment : Fragment() {
                 override fun onCameraIdle() {
                     if (mMarkerAtivo) {
                         val target: LatLng = googleMap!!.cameraPosition.target
-                        // Atualizando lugar
-                        mAddress = Geocoder(requireActivity().applicationContext).getFromLocation(target.latitude,target.longitude, 1)[0]
+                        try{
+                            // Atualizando lugar
+                            mAddress = Geocoder(requireActivity().applicationContext).getFromLocation(target.latitude,target.longitude, 1)[0]
+                        }
+                        catch (e: java.lang.Exception){
+                            // Não está num endereço válido
+                        }
+
+
                         // Atualizando marker
                         if (marker != null) {
                             marker!!.remove()
@@ -138,6 +151,21 @@ class MapViewFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
 
         fabButton!!.setOnClickListener {
+
+            if(FirebaseAuth.getInstance().currentUser == null){
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Você precisa logar para reportar!")
+                    .setMessage("Deseja entrar?")
+                    .setNegativeButton("Cancelar") { dialog, which ->
+                        // Respond to neutral button press
+                    }
+                    .setPositiveButton("Entrar") { dialog, which ->
+                        val intent = Intent(requireContext(), AutenticacaoActivity::class.java)
+                        startActivity(intent)
+                    }
+                    .show()
+                return@setOnClickListener
+            }
 
             try {
                 var descricao = ""
