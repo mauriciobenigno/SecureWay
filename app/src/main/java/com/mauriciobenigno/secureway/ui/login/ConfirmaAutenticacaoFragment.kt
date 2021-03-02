@@ -56,7 +56,9 @@ class ConfirmaAutenticacaoFragment : Fragment() {
         val bundle = arguments
 
         if(bundle!= null){
-        //    txtExemplo.text = bundle.getString("numero")
+            bundle.getString("numero")?.let {
+                enviarCodigoVerificacao(it)
+            }
         }
 
         return view
@@ -78,7 +80,7 @@ class ConfirmaAutenticacaoFragment : Fragment() {
 
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
            // Log.d(TAG, "onVerificationCompleted:$credential")
-
+            credential.smsCode?.let { preencheCodigo(it) }
             signInWithPhoneAuthCredential(credential)
         }
 
@@ -110,8 +112,13 @@ class ConfirmaAutenticacaoFragment : Fragment() {
         }
     }
 
-    private fun preencherPinPad(codeSms: String){
-
+    private fun preencheCodigo(codeSms: String){
+        edtCode1?.setText(codeSms[0].toString())
+        edtCode2?.setText(codeSms[1].toString())
+        edtCode3?.setText(codeSms[2].toString())
+        edtCode4?.setText(codeSms[3].toString())
+        edtCode5?.setText(codeSms[4].toString())
+        edtCode6?.setText(codeSms[5].toString())
     }
 
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
