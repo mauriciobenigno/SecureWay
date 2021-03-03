@@ -8,6 +8,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.mauriciobenigno.secureway.ui.activity.PrincipalActivity
 import com.mauriciobenigno.secureway.R
+import com.mauriciobenigno.secureway.ui.activity.autenticacao.AutenticacaoActivity
 
 class SplashActivity : AppCompatActivity() , Runnable {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +22,7 @@ class SplashActivity : AppCompatActivity() , Runnable {
 
     override fun run() {
         val intent = Intent(this, PrincipalActivity::class.java)
+        //val intent = Intent(this, AutenticacaoActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         this.finish()

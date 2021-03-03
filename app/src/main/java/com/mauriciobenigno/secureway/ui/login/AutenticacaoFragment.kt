@@ -9,6 +9,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.github.rtoshiro.util.format.SimpleMaskFormatter
+import com.github.rtoshiro.util.format.text.MaskTextWatcher
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.ui.activity.autenticacao.OnCommunicateInterface
 
@@ -26,11 +28,16 @@ class AutenticacaoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_autenticacao, container, false)
+        val edtApelido = view.findViewById(R.id.edtApelido) as EditText
         val edtNumero = view.findViewById(R.id.edtNumero) as EditText
         val button = view.findViewById(R.id.btnLogin) as Button
+
+        val mtw = MaskTextWatcher(edtNumero, SimpleMaskFormatter("(NN)NNNNN-NNNN"))
+        edtNumero.addTextChangedListener(mtw);
+
         button.setOnClickListener {
             if(edtNumero.text.isNotEmpty()){
-                onCommunicate?.onClickLogin(edtNumero.text.toString())
+                onCommunicate?.onClickLogin(edtApelido.text.toString(), edtNumero.text.toString())
             }
             else {
                 Toast.makeText(requireContext(), "Preencha o numero", Toast.LENGTH_SHORT).show()

@@ -29,12 +29,12 @@ class AutenticacaoActivity : AppCompatActivity(), OnCommunicateInterface {
         }
     }
 
-    override fun onClickLogin(numero: String?) {
+    override fun onClickLogin(nome: String?,numero: String?) {
 
         val novoFragment: Fragment = ConfirmaAutenticacaoFragment()
 
         val bundle = Bundle()
-        bundle.putString("apelido", numero)
+        bundle.putString("apelido", nome)
         bundle.putString("numero", numero)
         novoFragment.arguments = bundle
 
@@ -45,5 +45,5 @@ class AutenticacaoActivity : AppCompatActivity(), OnCommunicateInterface {
 }
 
 interface OnCommunicateInterface {
-    fun onClickLogin(str: String?)
+    fun onClickLogin(nome: String?, numero: String?)
 }

@@ -20,6 +20,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.ui.MapViewFragment
+import org.w3c.dom.Text
 
 
 class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -33,6 +34,8 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     // Drawer
     private var ll_logado: LinearLayout? = null
     private var ll_deslogado: LinearLayout? = null
+    private var tv_drawer_apelido: TextView? = null
+    private var tv_drawer_numero: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +62,8 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         val header: View = navigationView!!.getHeaderView(0)
         ll_logado = header.findViewById<View>(R.id.ll_drawer_info_logado) as LinearLayout
         ll_deslogado = header.findViewById<View>(R.id.ll_drawer_info_deslogado) as LinearLayout
-
+        tv_drawer_apelido = header.findViewById<View>(R.id.tv_drawer_apelido) as TextView
+        tv_drawer_numero = header.findViewById<View>(R.id.tv_drawer_numero) as TextView
 
         // Inicializar Framents
         fragmentMap = MapViewFragment()
@@ -70,6 +74,10 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         if(Firebase.auth.currentUser != null){
             ll_logado?.visibility  = View.VISIBLE
             ll_deslogado?.visibility  = View.GONE
+
+            tv_drawer_apelido!!.text = Firebase.auth.currentUser!!.displayName
+            tv_drawer_numero!!.text = Firebase.auth.currentUser!!.phoneNumber
+
         } else {
             ll_logado?.visibility  = View.GONE
             ll_deslogado?.visibility  = View.VISIBLE

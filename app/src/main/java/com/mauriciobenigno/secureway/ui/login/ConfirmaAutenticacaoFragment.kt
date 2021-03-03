@@ -1,6 +1,5 @@
 package com.mauriciobenigno.secureway.ui.login
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -22,6 +21,7 @@ import com.google.firebase.ktx.Firebase
 import com.mauriciobenigno.secureway.R
 import java.util.concurrent.TimeUnit
 
+
 class ConfirmaAutenticacaoFragment : Fragment() {
 
     private var storedVerificationId: String? = null
@@ -39,6 +39,9 @@ class ConfirmaAutenticacaoFragment : Fragment() {
     private var txtEditarNumero: TextView? = null
 
     private var btnValidarSMS: Button? = null
+
+    private var vNome = ""
+    private var vNumero = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +71,11 @@ class ConfirmaAutenticacaoFragment : Fragment() {
         val bundle = arguments
 
         if(bundle!= null){
+            bundle.getString("apelido")?.let {
+                vNome = it
+            }
             bundle.getString("numero")?.let {
+                vNumero = it
                 enviarCodigoVerificacao("+55${it}")
             }
         }
@@ -132,7 +139,10 @@ class ConfirmaAutenticacaoFragment : Fragment() {
 
         }
 
-        override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
+        override fun onCodeSent(
+            verificationId: String,
+            token: PhoneAuthProvider.ForceResendingToken
+        ) {
             storedVerificationId = verificationId
             resendToken = token
         }
@@ -154,6 +164,17 @@ class ConfirmaAutenticacaoFragment : Fragment() {
                 if (task.isSuccessful) {
                     val user = task.result?.user
 
+                    val profileUpdates = UserProfileChangeRequest.Builder()
+                        .setDisplayName(vNome)
+                        .build()
+
+                    Firebase.auth.currentUser!!.updateProfile(profileUpdates)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+
+                            }
+                        }
+
                     MaterialAlertDialogBuilder(requireContext())
                         .setTitle("Autenticação realizada com sucesso!")
                         .setPositiveButton("OK") { dialog, which ->
@@ -163,7 +184,7 @@ class ConfirmaAutenticacaoFragment : Fragment() {
 
                 } else {
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
-                        Toast.makeText(requireContext(), "Erro ao validar SMS", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Código Inválido!", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -171,51 +192,51 @@ class ConfirmaAutenticacaoFragment : Fragment() {
 
     private fun configurarInputs(){
 
-        edtCode1?.addTextChangedListener(object: TextWatcher{
+        edtCode1?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if(!p0.isNullOrEmpty()) edtCode2!!.requestFocus()
+                if (!p0.isNullOrEmpty()) edtCode2!!.requestFocus()
             }
 
             override fun afterTextChanged(p0: Editable?) {}
         })
 
-        edtCode2?.addTextChangedListener(object: TextWatcher{
+        edtCode2?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if(!p0.isNullOrEmpty()) edtCode3!!.requestFocus()
+                if (!p0.isNullOrEmpty()) edtCode3!!.requestFocus()
             }
 
             override fun afterTextChanged(p0: Editable?) {}
         })
 
-        edtCode3?.addTextChangedListener(object: TextWatcher{
+        edtCode3?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if(!p0.isNullOrEmpty()) edtCode4!!.requestFocus()
+                if (!p0.isNullOrEmpty()) edtCode4!!.requestFocus()
             }
 
             override fun afterTextChanged(p0: Editable?) {}
         })
 
-        edtCode4?.addTextChangedListener(object: TextWatcher{
+        edtCode4?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if(!p0.isNullOrEmpty()) edtCode5!!.requestFocus()
+                if (!p0.isNullOrEmpty()) edtCode5!!.requestFocus()
             }
 
             override fun afterTextChanged(p0: Editable?) {}
         })
 
-        edtCode5?.addTextChangedListener(object: TextWatcher{
+        edtCode5?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if(!p0.isNullOrEmpty()) edtCode6!!.requestFocus()
+                if (!p0.isNullOrEmpty()) edtCode6!!.requestFocus()
             }
 
             override fun afterTextChanged(p0: Editable?) {}
