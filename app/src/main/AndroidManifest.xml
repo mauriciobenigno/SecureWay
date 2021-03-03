@@ -5,7 +5,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -19,6 +19,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
+        <activity android:name=".ui.activity.autenticacao.AutenticacaoActivity"></activity>
         <activity
             android:name=".ui.activity.intro.SplashActivity"
             android:screenOrientation="portrait">
@@ -36,7 +37,7 @@
         <activity
             android:name=".ui.activity.PrincipalActivity"
             android:label="@string/title_activity_maps"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
