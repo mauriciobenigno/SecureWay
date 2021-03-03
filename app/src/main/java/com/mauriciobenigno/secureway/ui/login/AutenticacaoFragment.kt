@@ -32,12 +32,13 @@ class AutenticacaoFragment : Fragment() {
         val edtNumero = view.findViewById(R.id.edtNumero) as EditText
         val button = view.findViewById(R.id.btnLogin) as Button
 
-        val mtw = MaskTextWatcher(edtNumero, SimpleMaskFormatter("(NN)NNNNN-NNNN"))
+        val mtw = MaskTextWatcher(edtNumero, SimpleMaskFormatter("(NN) NNNNN-NNNN"))
         edtNumero.addTextChangedListener(mtw);
 
         button.setOnClickListener {
             if(edtNumero.text.isNotEmpty()){
-                onCommunicate?.onClickLogin(edtApelido.text.toString(), edtNumero.text.toString())
+                val textoFiltrado = edtNumero.text.toString().replace("[^\\d.]".toRegex(), "")
+                onCommunicate?.onClickLogin(edtApelido.text.toString(), textoFiltrado)
             }
             else {
                 Toast.makeText(requireContext(), "Preencha o numero", Toast.LENGTH_SHORT).show()

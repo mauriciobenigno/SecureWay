@@ -1,5 +1,6 @@
 package com.mauriciobenigno.secureway.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -15,11 +16,13 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.github.rtoshiro.util.format.MaskFormatter
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.ui.MapViewFragment
+import com.mauriciobenigno.secureway.ui.activity.autenticacao.AutenticacaoActivity
 import org.w3c.dom.Text
 
 
@@ -62,6 +65,12 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         val header: View = navigationView!!.getHeaderView(0)
         ll_logado = header.findViewById<View>(R.id.ll_drawer_info_logado) as LinearLayout
         ll_deslogado = header.findViewById<View>(R.id.ll_drawer_info_deslogado) as LinearLayout
+
+        ll_deslogado?.setOnClickListener {
+            val intent = Intent(this, AutenticacaoActivity::class.java)
+            startActivity(intent)
+        }
+
         tv_drawer_apelido = header.findViewById<View>(R.id.tv_drawer_apelido) as TextView
         tv_drawer_numero = header.findViewById<View>(R.id.tv_drawer_numero) as TextView
 
@@ -74,10 +83,8 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         if(Firebase.auth.currentUser != null){
             ll_logado?.visibility  = View.VISIBLE
             ll_deslogado?.visibility  = View.GONE
-
             tv_drawer_apelido!!.text = Firebase.auth.currentUser!!.displayName
             tv_drawer_numero!!.text = Firebase.auth.currentUser!!.phoneNumber
-
         } else {
             ll_logado?.visibility  = View.GONE
             ll_deslogado?.visibility  = View.VISIBLE
