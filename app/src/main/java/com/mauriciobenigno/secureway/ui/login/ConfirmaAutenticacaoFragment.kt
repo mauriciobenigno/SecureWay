@@ -1,15 +1,19 @@
 package com.mauriciobenigno.secureway.ui.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
@@ -32,6 +36,10 @@ class ConfirmaAutenticacaoFragment : Fragment() {
     private var edtCode5: EditText? = null
     private var edtCode6: EditText? = null
 
+    private var txtEditarNumero: TextView? = null
+
+    private var btnValidarSMS: Button? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,26 +59,45 @@ class ConfirmaAutenticacaoFragment : Fragment() {
         edtCode5 = view.findViewById(R.id.edtCode5) as EditText
         edtCode6 = view.findViewById(R.id.edtCode6) as EditText
 
+        txtEditarNumero = view.findViewById(R.id.txtEditarNumero) as TextView
+
+        btnValidarSMS = view.findViewById(R.id.btnValidarSMS)
+
         configurarInputs()
 
         val bundle = arguments
 
         if(bundle!= null){
             bundle.getString("numero")?.let {
-                enviarCodigoVerificacao(it)
+                enviarCodigoVerificacao("+55${it}")
             }
+        }
+
+        txtEditarNumero!!.setOnClickListener {
+            val ft: FragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            ft.replace(R.id.container_frame_auth, AutenticacaoFragment())
+            ft.commit()
+        }
+
+        btnValidarSMS?.setOnClickListener {
+            val codigoSms = "${edtCode1!!.text}${edtCode2!!.text}${edtCode3!!.text}${edtCode4!!.text}${edtCode5!!.text}${edtCode6!!.text}"
+            verificarCodigoManualmente(codigoSms)
         }
 
         return view
     }
 
+    private fun verificarCodigoManualmente(codigoSms: String){
+        val credencial = PhoneAuthProvider.getCredential(storedVerificationId!!, codigoSms)
+        signInWithPhoneAuthCredential(credencial)
+    }
 
     private fun enviarCodigoVerificacao(numero: String){
         val options = PhoneAuthOptions.newBuilder(Firebase.auth)
-            .setPhoneNumber(numero)       // Phone number to verify
-            .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
-            .setActivity(requireActivity())                 // Activity (for callback binding)
-            .setCallbacks(mCallbacks)          // OnVerificationStateChangedCallbacks
+            .setPhoneNumber(numero)
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(requireActivity())
+            .setCallbacks(mCallbacks)
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
@@ -79,36 +106,35 @@ class ConfirmaAutenticacaoFragment : Fragment() {
     private var mCallbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-           // Log.d(TAG, "onVerificationCompleted:$credential")
             credential.smsCode?.let { preencheCodigo(it) }
             signInWithPhoneAuthCredential(credential)
         }
 
         override fun onVerificationFailed(e: FirebaseException) {
-            // This callback is invoked in an invalid request for verification is made,
-            // for instance if the the phone number format is not valid.
-            //Log.w(TAG, "onVerificationFailed", e)
+            var mensagem = ""
 
             if (e is FirebaseAuthInvalidCredentialsException) {
-                // Invalid request
-                // ...
+                mensagem = e.message.toString()
             } else if (e is FirebaseTooManyRequestsException) {
-                // The SMS quota for the project has been exceeded
-                // ...
+                mensagem = "Foram feitas várias tentativas de login com esse numero!\nTente novamente mais tarde!"
+            }
+            else{
+                mensagem = e.message.toString()
             }
 
-            // Show a message and update the UI
-            // ...
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Ocorreu um erro!")
+                .setMessage(mensagem)
+                .setPositiveButton("OK") { dialog, which ->
+                    activity?.finish()
+                }
+                .show()
+
         }
 
         override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-            //Log.d(TAG, "onCodeSent:$verificationId")
-
-            // Save verification ID and resending token so we can use them later
             storedVerificationId = verificationId
             resendToken = token
-
-            // ...
         }
     }
 
@@ -126,16 +152,16 @@ class ConfirmaAutenticacaoFragment : Fragment() {
         mAuth.signInWithCredential(credential)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    //Log.d(TAG, "signInWithCredential:success")
-
                     val user = task.result?.user
 
-                    Toast.makeText(requireContext(), "sucesso ao validar SMS", Toast.LENGTH_SHORT).show()
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Autenticação realizada com sucesso!")
+                        .setPositiveButton("OK") { dialog, which ->
+                            activity?.finish()
+                        }
+                        .show()
 
                 } else {
-                    // Sign in failed, display a message and update the UI
-                   // Log.w(TAG, "signInWithCredential:failure", task.exception)
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
                         Toast.makeText(requireContext(), "Erro ao validar SMS", Toast.LENGTH_SHORT).show()
                     }
@@ -194,9 +220,6 @@ class ConfirmaAutenticacaoFragment : Fragment() {
 
             override fun afterTextChanged(p0: Editable?) {}
         })
-
-
-
     }
 
 }

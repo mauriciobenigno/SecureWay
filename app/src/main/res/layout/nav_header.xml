@@ -14,7 +14,7 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <LinearLayout
-        android:id="@+id/drawer_info_logado"
+        android:id="@+id/ll_drawer_info_logado"
         android:visibility="gone"
         android:layout_marginTop="16dp"
         android:paddingTop="16dp"
@@ -31,7 +31,7 @@
             android:src="@mipmap/ic_launcher" />
 
         <TextView
-            android:id="@+id/nav_header_textView"
+            android:id="@+id/nav_header_apelido"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
@@ -47,7 +47,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/drawer_info_deslogado"
+        android:id="@+id/ll_drawer_info_deslogado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">

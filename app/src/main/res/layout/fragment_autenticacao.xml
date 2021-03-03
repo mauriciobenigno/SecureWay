@@ -95,19 +95,21 @@
 
             <Button
                 android:id="@+id/btnLogin"
+                style="Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginTop="30dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
                 android:layout_gravity="center"
-                style="Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingTop="8dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="8dp"
                 android:text="Entrar"
                 android:textAppearance="?android:textAppearanceLarge"
-                android:textStyle="bold"
-                android:paddingRight="20dp"
-                android:paddingLeft="20dp" />
+                android:textStyle="bold" />
 
 
         </LinearLayout>

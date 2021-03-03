@@ -3,6 +3,9 @@ package com.mauriciobenigno.secureway.ui.activity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -27,6 +30,10 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     private var fragmentMap: MapViewFragment? = null
     private var fragmentAtual: Fragment? = null
 
+    // Drawer
+    private var ll_logado: LinearLayout? = null
+    private var ll_deslogado: LinearLayout? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_principal)
@@ -46,16 +53,32 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
         toggle.syncState()
 
-        navigationView = findViewById(R.id.navView);
-        navigationView!!.setNavigationItemSelectedListener(this);
+        navigationView = findViewById(R.id.navView)
+        navigationView!!.setNavigationItemSelectedListener(this)
+
+        val header: View = navigationView!!.getHeaderView(0)
+        ll_logado = header.findViewById<View>(R.id.ll_drawer_info_logado) as LinearLayout
+        ll_deslogado = header.findViewById<View>(R.id.ll_drawer_info_deslogado) as LinearLayout
+
 
         // Inicializar Framents
         fragmentMap = MapViewFragment()
         fragmentAtual = fragmentMap
     }
 
+    private fun configurarContaDrawer(){
+        if(Firebase.auth.currentUser != null){
+            ll_logado?.visibility  = View.VISIBLE
+            ll_deslogado?.visibility  = View.GONE
+        } else {
+            ll_logado?.visibility  = View.GONE
+            ll_deslogado?.visibility  = View.VISIBLE
+        }
+    }
+
     override fun onResume() {
         super.onResume()
+        configurarContaDrawer()
         if (fragmentAtual != null) {
             val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
             ft.replace(R.id.container_frame, fragmentAtual!!)
@@ -81,6 +104,7 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             }
             R.id.nav_item_sair -> {
                 Firebase.auth.signOut()
+                configurarContaDrawer()
                 Toast.makeText(this, "Saindo da conta", Toast.LENGTH_SHORT).show()
 
             }
