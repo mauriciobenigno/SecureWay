@@ -24,6 +24,12 @@ class AppRepository(context: Context) {
 
     fun getLiveAllDistric() = database.Dao().getLiveAllDistrict()
 
+    fun getAllAdjetivosFiltrado(posicao: Boolean) = database.Dao().getAllAdjetivosFiltrado(posicao)
+
+    fun getAllAdjetivosPositivos() = database.Dao().getAllAdjetivosPositivos()
+
+    fun getAllAdjetivosNegativos() = database.Dao().getAllAdjetivosNegativos()
+
     fun getHeatMapData(): ArrayList<WeightedLatLng> {
         val data = ArrayList<WeightedLatLng>()
         val districts = database.Dao().getAllDistrict()

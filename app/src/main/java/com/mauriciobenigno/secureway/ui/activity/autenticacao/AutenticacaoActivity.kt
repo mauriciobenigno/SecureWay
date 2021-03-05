@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.mauriciobenigno.secureway.R
-import com.mauriciobenigno.secureway.ui.login.AutenticacaoFragment
-import com.mauriciobenigno.secureway.ui.login.ConfirmaAutenticacaoFragment
+import com.mauriciobenigno.secureway.ui.fragment.login.AutenticacaoFragment
+import com.mauriciobenigno.secureway.ui.fragment.login.ConfirmaAutenticacaoFragment
 
 class AutenticacaoActivity : AppCompatActivity(), OnCommunicateInterface {
 

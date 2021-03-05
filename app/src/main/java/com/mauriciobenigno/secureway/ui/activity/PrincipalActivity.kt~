@@ -145,7 +145,7 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 val builder = AlertDialog.Builder(this)
                 builder.setMessage("Você deseja sair do aplicativo?")
                     .setNegativeButton("Não", null)
-                    .setPositiveButton("Sim") { _, _ ->
+                    .setPositiveButton("Sim") { dialog, id ->
                         super.onBackPressed()
                     }
                 val alert = builder.create()

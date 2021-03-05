@@ -21,7 +21,6 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getLiveAllDistrict() = appRepository.getLiveAllDistric()
 
-
     fun getHeatMapData(): ArrayList<WeightedLatLng> {
         return appRepository.getHeatMapData()
     }

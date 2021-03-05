@@ -156,10 +156,10 @@ class MapViewFragment : Fragment() {
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle("Você precisa logar para reportar!")
                     .setMessage("Deseja entrar?")
-                    .setNegativeButton("Cancelar") { dialog, which ->
+                    .setNegativeButton("Cancelar") { _, _ ->
                         // Respond to neutral button press
                     }
-                    .setPositiveButton("Entrar") { dialog, which ->
+                    .setPositiveButton("Entrar") { _, _ ->
                         val intent = Intent(requireContext(), AutenticacaoActivity::class.java)
                         startActivity(intent)
                     }
@@ -211,7 +211,7 @@ class MapViewFragment : Fragment() {
                 builder.setTitle("Reportar o seguinte endereço? ")
                     .setMessage(Html.fromHtml(descricao))
                     .setNegativeButton("Não", null)
-                    .setPositiveButton("Sim") { dialog, id ->
+                    .setPositiveButton("Sim") { _, _ ->
                         val district = District(mAddress!!.getSubThoroughfare().toString(),mAddress!!.getSubLocality(),673.0,mAddress!!.latitude,mAddress!!.longitude)
                         doAsync {
                             viewModel.saveHeapPoint(district)
