@@ -38,5 +38,6 @@ class SplashActivity : AppCompatActivity() , Runnable {
         Stetho.initializeWithDefaults(this)
         // Fazer fetch de dados
         AppRepository(application).fetchZonasByLocationFromServer(application)
+        AppRepository(application).fetchAdjetivoFromServer()
     }
 }
