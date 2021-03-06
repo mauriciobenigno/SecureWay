@@ -1,12 +1,17 @@
 package com.mauriciobenigno.secureway.repository
 
 import android.content.Context
+import android.location.Location
+import android.location.LocationManager
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.google.maps.android.heatmaps.WeightedLatLng
 import com.mauriciobenigno.secureway.database.AppDatabase
+import com.mauriciobenigno.secureway.model.Adjetivo
+import com.mauriciobenigno.secureway.model.Coordenada
 import com.mauriciobenigno.secureway.model.District
+import com.mauriciobenigno.secureway.model.Zona
 import com.mauriciobenigno.secureway.service.ApiService
 import org.jetbrains.anko.doAsync
 import org.json.JSONArray
@@ -24,58 +29,43 @@ class AppRepository(context: Context) {
 
     fun getLiveAllDistric() = database.Dao().getLiveAllDistrict()
 
+    fun getAllAdjetivosFiltrado(posicao: Boolean) = database.Dao().getAllAdjetivosFiltrado(posicao)
+
+    fun getAllAdjetivosPositivos() = database.Dao().getAllAdjetivosPositivos()
+
+    fun getAllAdjetivosNegativos() = database.Dao().getAllAdjetivosNegativos()
+
     fun getHeatMapData(): ArrayList<WeightedLatLng> {
         val data = ArrayList<WeightedLatLng>()
-        val districts = database.Dao().getAllDistrict()
-        districts.forEach {
-            if(it.density != 0.0)
-                data.add(WeightedLatLng(LatLng(it.lat, it.lon), it.density))
+        val zonas = database.Dao().getAllZonas()
+        zonas.forEach {
+            if(it.densidade != 0.0){
+                data.add(WeightedLatLng(LatLng(it.cordenada_x, it.cordenada_y), it.densidade))
+            }
         }
         return data
     }
 
-    fun saveSaveOnServer(district: District) {
-        //val request = ApiService.getEndpoints()
-        /*request.saveReport(district).enqueue(
-            object : Callback<District> {
-                override fun onFailure(call: Call<District>, t: Throwable) {
+    fun saveZonaOnServer(zona: Zona) {
+        val request = ApiService.getEndpoints()
+        request.saveZonaOnServer(zona).enqueue(
+            object : Callback<Zona> {
+                override fun onFailure(call: Call<Zona>, t: Throwable) {
                     Log.e("Erro", "Erro ao cadastrar")
                 }
 
-                override fun onResponse(call: Call<District>, response: Response<District>) {
+                override fun onResponse(call: Call<Zona>, response: Response<Zona>) {
                     if(response.code() == 201) {
                         response.body()?.let {
                             doAsync {
-                               // database.Dao().addSingleProduct(it)
+                               database.Dao().addSingleZona(it)
                             }
                         }
                     }
                 }
             }
-        )*/
-        database.Dao().insertDistrict(district)
+        )
     }
-/*
-    fun generateHeatMapData(context: Context): ArrayList<WeightedLatLng> {
-        val data = ArrayList<WeightedLatLng>()
-
-        val jsonData = getJsonDataFromAsset(context,"district_data.json")
-        jsonData?.let {
-            for (i in 0 until it.length()) {
-                val entry = it.getJSONObject(i)
-                val lat = entry.getDouble("lat")
-                val lon = entry.getDouble("lon")
-                val density = entry.getDouble("density")
-
-                if (density != 0.0) {
-                    val weightedLatLng = WeightedLatLng(LatLng(lat, lon), density)
-                    data.add(weightedLatLng)
-                }
-            }
-        }
-
-        return data
-    }*/
 
     fun fetchLocationsFromServer() {
         val request = ApiService.getEndpoints()
@@ -102,24 +92,71 @@ class AppRepository(context: Context) {
         })
     }
 
-    fun fetchDataFromServer() {
-        /*val request = ApiService.getEndpoints()
-        request.getAllProduts().enqueue(object : Callback<List<Produto>> {
-            override fun onFailure(call: Call<List<Produto>>, t: Throwable) {
+    fun fetchAdjetivoFromServer() {
+        val request = ApiService.getEndpoints()
+        request.getAllAdjetivos().enqueue(object : Callback<List<Adjetivo>> {
+            override fun onFailure(call: Call<List<Adjetivo>>, t: Throwable) {
                 Log.wtf("Falha", "Requisição Falhou!")
             }
 
-            override fun onResponse(call: Call<List<Produto>>, response: Response<List<Produto>>) {
+            override fun onResponse(call: Call<List<Adjetivo>>, response: Response<List<Adjetivo>>) {
                 if (response.code() == 200) {
                     val resultado = response.body()
-                    resultado?.let { produtos ->
-                        doAsync {
-                            database.Dao().allAllProducts(produtos)
+                    try {
+                        resultado?.let { adjetivos ->
+                            doAsync {
+                                database.Dao().insertAllAdjetivos(adjetivos)
+                            }
                         }
+                    }catch (e: Exception){
+                        Log.e("ErroAPI",e.message!!)
                     }
                 }
             }
-        })*/
+        })
+    }
+
+
+    fun fetchZonasByLocationFromServer(context: Context) {
+        val location = getLastKnownLocation(context)
+        if(location != null){
+            val coordenada = Coordenada(location.latitude, location.longitude)
+            val request = ApiService.getEndpoints()
+            request.getZonasByLocation(coordenada).enqueue(object : Callback<List<Zona>> {
+                override fun onFailure(call: Call<List<Zona>>, t: Throwable) {
+                    Log.wtf("Falha", "Requisição Falhou!")
+                }
+
+                override fun onResponse(call: Call<List<Zona>>, response: Response<List<Zona>>) {
+                    if (response.code() == 201) {
+                        val resultado = response.body()
+                        try {
+                            resultado?.let { zonas ->
+                                doAsync {
+                                    database.Dao().insertAllZonas(zonas)
+                                }
+                            }
+                        }catch (e: Exception){
+                            Log.e("ErroAPI",e.message!!)
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+    private fun getLastKnownLocation(context: Context): Location? {
+        var mLocationManager: LocationManager? = null
+        mLocationManager = context.applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val providers = mLocationManager!!.getProviders(true)
+        var bestLocation: Location? = null
+        for (provider in providers) {
+            val l = mLocationManager!!.getLastKnownLocation(provider) ?: continue
+            if (bestLocation == null || l.accuracy < bestLocation.accuracy) {
+                bestLocation = l
+            }
+        }
+        return bestLocation
     }
 
     /*fun saveProductOnServer(product: Produto) {

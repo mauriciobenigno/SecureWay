@@ -2,8 +2,10 @@ package com.mauriciobenigno.secureway.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.mauriciobenigno.secureway.model.Adjetivo
 import com.mauriciobenigno.secureway.model.District
 import com.mauriciobenigno.secureway.model.Local
+import com.mauriciobenigno.secureway.model.Zona
 
 @Dao
 interface AppDao {
@@ -22,6 +24,27 @@ interface AppDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDistrict(district: District)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addSingleZona(zona: Zona)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllZonas(zonas: List<Zona>)
+
+    @Query("select * from sw_zona")
+    fun getAllZonas() : List<Zona>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllAdjetivos(adjetivos: List<Adjetivo>)
+
+    @Query("select * from sw_adjetivo where negativo = 0")
+    fun getAllAdjetivosPositivos() : List<Adjetivo>
+
+    @Query("select * from sw_adjetivo where negativo = 1")
+    fun getAllAdjetivosNegativos() : List<Adjetivo>
+
+    @Query("select * from sw_adjetivo where negativo = :posicao")
+    fun getAllAdjetivosFiltrado(posicao: Boolean) : LiveData<List<Adjetivo>>
 
     /*@Query("select * from mxsprodut")
     fun getAllLiveProducts() : LiveData<List<Produto>>

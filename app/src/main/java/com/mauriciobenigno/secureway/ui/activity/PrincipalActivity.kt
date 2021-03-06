@@ -48,13 +48,7 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
         drawerLayout = findViewById(R.id.drawerLayout)
 
-        val toggle = ActionBarDrawerToggle(
-            this,
-            drawerLayout,
-            toolbar,
-            R.string.open_drawer,
-            R.string.close_drawer
-        )
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer)
         drawerLayout!!.addDrawerListener(toggle)
 
         toggle.syncState()
@@ -145,7 +139,7 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 val builder = AlertDialog.Builder(this)
                 builder.setMessage("Você deseja sair do aplicativo?")
                     .setNegativeButton("Não", null)
-                    .setPositiveButton("Sim") { dialog, id ->
+                    .setPositiveButton("Sim") { _, _ ->
                         super.onBackPressed()
                     }
                 val alert = builder.create()

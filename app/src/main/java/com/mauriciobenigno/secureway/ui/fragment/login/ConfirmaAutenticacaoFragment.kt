@@ -1,4 +1,4 @@
-package com.mauriciobenigno.secureway.ui.login
+package com.mauriciobenigno.secureway.ui.fragment.login
 
 import android.os.Bundle
 import android.text.Editable
@@ -118,7 +118,7 @@ class ConfirmaAutenticacaoFragment : Fragment() {
         }
 
         override fun onVerificationFailed(e: FirebaseException) {
-            var mensagem = ""
+            var mensagem: String
 
             if (e is FirebaseAuthInvalidCredentialsException) {
                 mensagem = e.message.toString()
@@ -132,7 +132,7 @@ class ConfirmaAutenticacaoFragment : Fragment() {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Ocorreu um erro!")
                 .setMessage(mensagem)
-                .setPositiveButton("OK") { dialog, which ->
+                .setPositiveButton("OK") { _, _ ->
                     activity?.finish()
                 }
                 .show()
@@ -177,7 +177,7 @@ class ConfirmaAutenticacaoFragment : Fragment() {
 
                     MaterialAlertDialogBuilder(requireContext())
                         .setTitle("Autenticação realizada com sucesso!")
-                        .setPositiveButton("OK") { dialog, which ->
+                        .setPositiveButton("OK") { _, _ ->
                             activity?.finish()
                         }
                         .show()

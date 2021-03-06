@@ -4,10 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.mauriciobenigno.secureway.model.District
-import com.mauriciobenigno.secureway.model.Local
+import com.mauriciobenigno.secureway.model.*
 
-@Database(entities = [Local::class,District::class], version = 3)
+@Database(entities = [
+    Local::class,
+    District::class,
+    Adjetivo::class,
+    Report::class,
+    Zona::class
+], version = 9)
+
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun Dao() : AppDao
