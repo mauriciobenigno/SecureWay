@@ -35,6 +35,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.maps.android.heatmaps.HeatmapTileProvider
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.model.District
+import com.mauriciobenigno.secureway.model.Zona
 import com.mauriciobenigno.secureway.ui.activity.autenticacao.AutenticacaoActivity
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -206,15 +207,13 @@ class MapViewFragment : Fragment() {
                     }
                 }
 
-
                 val builder = AlertDialog.Builder(requireContext())
                 builder.setTitle("Reportar o seguinte endereço? ")
                     .setMessage(Html.fromHtml(descricao))
                     .setNegativeButton("Não", null)
                     .setPositiveButton("Sim") { _, _ ->
-                        val district = District(mAddress!!.getSubThoroughfare().toString(),mAddress!!.getSubLocality(),673.0,mAddress!!.latitude,mAddress!!.longitude)
                         doAsync {
-                            viewModel.saveHeapPoint(district)
+                            viewModel.saveZonaOnServer(Zona(0,mAddress!!.latitude,mAddress!!.longitude,500.0))
                             uiThread {
                                 loadHeatMap(false)
                             }
@@ -230,8 +229,6 @@ class MapViewFragment : Fragment() {
         }
         loadHeatMap()
     }
-
-
 
     override fun onPause() {
         super.onPause()

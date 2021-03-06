@@ -8,11 +8,11 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
     private val appRepository = AppRepository(application)
 
     init {
-        appRepository.fetchLocationsFromServer()
+        appRepository.fetchAdjetivoFromServer()
     }
 
     fun refreshData() {
-        appRepository.fetchLocationsFromServer()
+        appRepository.fetchAdjetivoFromServer()
     }
 
     fun getAllAdjetivosFiltrado(posicao: Boolean) = appRepository.getAllAdjetivosFiltrado(posicao)

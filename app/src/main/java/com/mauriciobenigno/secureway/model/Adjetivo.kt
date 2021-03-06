@@ -9,9 +9,9 @@ import java.io.Serializable
 data class Adjetivo (
     @ColumnInfo(name = "id_adjetivo")
     @PrimaryKey(autoGenerate = false)
-    var adjetivoId: Long,
+    var id_adjetivo: Long,
     @ColumnInfo(name = "negativo")
-    var negativo: Boolean,
+    var negativo: Int,
     @ColumnInfo(name = "descricao")
     var descricao: String
 ): Serializable

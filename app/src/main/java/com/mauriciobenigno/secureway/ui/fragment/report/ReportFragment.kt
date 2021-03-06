@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.model.Adjetivo
 import com.mauriciobenigno.secureway.ui.adapter.AdjetivoAdapter
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.support.v4.runOnUiThread
 
 /*
 Créditos icones por https://www.flaticon.com/br/autores/kiranshastry"v
@@ -51,18 +53,6 @@ class ReportFragment : Fragment() {
 
         recyclerView?.addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
 
-        ib_positivo?.setOnClickListener {
-            ll_positivo?.setBackgroundColor(Color.parseColor("#C6C6C6"))
-            ll_negativo?.setBackgroundColor(Color.WHITE)
-            posicao = false
-        }
-
-        ib_negativo?.setOnClickListener {
-            ll_negativo?.setBackgroundColor(Color.parseColor("#C6C6C6"))
-            ll_positivo?.setBackgroundColor(Color.WHITE)
-            posicao = true
-        }
-
         return rootView
     }
 
@@ -70,7 +60,7 @@ class ReportFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ReportViewModel::class.java)
 
-        var lista = mutableListOf<Adjetivo>()
+        /*var lista = mutableListOf<Adjetivo>()
         lista.add(Adjetivo(1,true, "teste 1"))
         lista.add(Adjetivo(2,true, "teste 3"))
         lista.add(Adjetivo(3,true, "teste sdsad"))
@@ -78,11 +68,37 @@ class ReportFragment : Fragment() {
         lista.add(Adjetivo(5,true, "teste dsdfsf"))
         lista.add(Adjetivo(6,true, "teste qwqwqw"))
 
-        recyclerView?.setAdapter(AdjetivoAdapter(lista))
+        recyclerView?.setAdapter(AdjetivoAdapter(lista))*/
 
-        /*viewModel.getAllAdjetivosFiltrado(posicao).observe(viewLifecycleOwner, Observer{
-            recyclerView?.setAdapter(AdjetivoAdapter(it))
-        })*/
+        doAsync {
+            recyclerView?.adapter = AdjetivoAdapter(viewModel.getAllAdjetivosPositivos())
+        }
+
+        ib_positivo?.setOnClickListener {
+            ll_positivo?.setBackgroundColor(Color.parseColor("#C6C6C6"))
+            ll_negativo?.setBackgroundColor(Color.WHITE)
+            posicao = false
+            doAsync {
+                val lista = viewModel.getAllAdjetivosPositivos()
+                runOnUiThread {
+                    recyclerView?.adapter = AdjetivoAdapter(lista)
+                }
+            }
+        }
+
+        ib_negativo?.setOnClickListener {
+            ll_negativo?.setBackgroundColor(Color.parseColor("#C6C6C6"))
+            ll_positivo?.setBackgroundColor(Color.WHITE)
+            posicao = true
+
+            doAsync {
+                val lista = viewModel.getAllAdjetivosNegativos()
+                runOnUiThread {
+                    recyclerView?.adapter = AdjetivoAdapter(lista)
+                }
+            }
+        }
+
     }
 
 }

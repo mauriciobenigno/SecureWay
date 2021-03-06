@@ -9,7 +9,7 @@ import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.model.Adjetivo
 
 
-class AdjetivoAdapter(private val list: List<Adjetivo>) :
+class AdjetivoAdapter(private var list: List<Adjetivo>) :
     RecyclerView.Adapter<AdjetivoAdapter.ViewHolder>() {
 
     private val listChecked = mutableListOf<Adjetivo>()
@@ -45,4 +45,8 @@ class AdjetivoAdapter(private val list: List<Adjetivo>) :
     override fun getItemCount() = list.size
 
     fun getAllCheckedList() = listChecked
+
+    fun setList(list: List<Adjetivo>){
+        this.list = list
+    }
 }
