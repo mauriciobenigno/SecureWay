@@ -1,21 +1,22 @@
 package com.mauriciobenigno.secureway.ui.fragment.report
 
-import android.graphics.Color
+import android.location.Address
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import androidx.lifecycle.Observer
+import android.widget.Button
+import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.model.Adjetivo
+import com.mauriciobenigno.secureway.model.Zona
 import com.mauriciobenigno.secureway.ui.adapter.AdjetivoAdapter
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.find
 import org.jetbrains.anko.support.v4.runOnUiThread
 
 /*
@@ -29,15 +30,13 @@ class ReportFragment : Fragment() {
 
     private lateinit var viewModel: ReportViewModel
 
-    private var ll_positivo: LinearLayout? = null
-    private var ll_negativo: LinearLayout? = null
-
-    private var ib_positivo: ImageButton? = null
-    private var ib_negativo: ImageButton? = null
+    private var btnGravarReport: Button? = null
 
     private var recyclerView: RecyclerView? = null
 
-    private var posicao: Boolean = true
+    private var adapter: AdjetivoAdapter? = null
+
+    private var endereco: Address? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,9 +44,17 @@ class ReportFragment : Fragment() {
     ): View? {
         val rootView: View = inflater.inflate(R.layout.report_fragment, container, false)
 
+        btnGravarReport = rootView.find(R.id.btnGravarReport)
+
         recyclerView = rootView.findViewById(R.id.recyclerListAdjetivos)
 
-       // recyclerView?.addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
+
+        val bundle = arguments
+
+        if(bundle!= null){
+            endereco = bundle.get("endereco") as Address
+        }
+
 
         return rootView
     }
@@ -79,8 +86,20 @@ class ReportFragment : Fragment() {
             }
 
             runOnUiThread {
-                recyclerView?.adapter = AdjetivoAdapter(lista)
+                adapter = AdjetivoAdapter(lista)
+                recyclerView?.adapter = adapter
             }
+        }
+
+        btnGravarReport?.setOnClickListener {
+            if(adapter?.allOptionsVerifyed() == true){
+                viewModel.saveZonaOnServer(Zona(0,endereco!!.latitude,endereco!!.longitude,500.0))
+                Toast.makeText(requireContext(), "Opinião registrada",Toast.LENGTH_LONG).show()
+                requireActivity().finish()
+            } else {
+                Toast.makeText(requireContext(), "Marque uma opção em cada dupla",Toast.LENGTH_LONG).show()
+            }
+
         }
 
     }

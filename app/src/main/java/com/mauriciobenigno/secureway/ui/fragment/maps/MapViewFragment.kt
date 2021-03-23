@@ -135,8 +135,6 @@ class MapViewFragment : Fragment() {
 
         }
 
-        mMapView!!.onResume()
-
         fabButton = rootView.findViewById(R.id.fab) as ExtendedFloatingActionButton
 
         try {
@@ -231,7 +229,7 @@ class MapViewFragment : Fragment() {
             }
 
         }
-        loadHeatMap()
+        loadHeatMap(false)
     }
 
     override fun onPause() {
@@ -334,10 +332,8 @@ class MapViewFragment : Fragment() {
                     .radius(50) // optional, in pixels, can be anything between 20 and 50
                     .maxIntensity(1000.0) // set the maximum intensity
                     .build()
-
                 uiThread {
                     googleMap!!.addTileOverlay(TileOverlayOptions().tileProvider(heatMapProvider))
-
                     if(moveToIndia){
                         val indiaLatLng = LatLng(20.5937, 78.9629)
                         googleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(indiaLatLng, 5f))

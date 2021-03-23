@@ -24,16 +24,14 @@ class ReportActivity : AppCompatActivity() {
         supportActionBar!!.title = "Reportar"
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        fragmentAtual = ReportFragment()
 
+        val novoFragment: Fragment = ReportFragment()
+        val bundle = Bundle()
+        bundle.putAll( intent.extras)
+        novoFragment.arguments = bundle
 
-        val extras = intent.extras
+        fragmentAtual = novoFragment
 
-        val endereco = extras!!.get("endereco") as Address
-
-        if (endereco.getAdminArea() != null && endereco.getAdminArea().length >= 2) {
-            Toast.makeText(this, endereco.getAdminArea(), Toast.LENGTH_SHORT).show()
-        }
     }
 
     override fun onResume() {

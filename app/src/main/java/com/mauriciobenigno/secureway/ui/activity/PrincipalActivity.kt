@@ -17,6 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.github.rtoshiro.util.format.MaskFormatter
+import com.google.android.gms.maps.MapFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -71,6 +72,18 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         // Inicializar Framents
         fragmentMap = MapViewFragment()
         fragmentAtual = fragmentMap
+
+
+        if (fragmentAtual != null) {
+            val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+            ft.replace(R.id.container_frame, fragmentAtual!!)
+            ft.commit()
+
+            if(fragmentAtual is MapViewFragment){
+                // Atualizar o frament mapa com o novo ponto
+                (fragmentAtual as MapViewFragment).loadHeatMap(false)
+            }
+        }
     }
 
     private fun configurarContaDrawer(){
@@ -88,11 +101,6 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     override fun onResume() {
         super.onResume()
         configurarContaDrawer()
-        if (fragmentAtual != null) {
-            val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-            ft.replace(R.id.container_frame, fragmentAtual!!)
-            ft.commit()
-        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

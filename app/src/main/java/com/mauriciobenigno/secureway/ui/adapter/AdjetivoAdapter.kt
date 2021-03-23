@@ -50,8 +50,6 @@ class AdjetivoAdapter(private var list: List<Pair<Adjetivo, Adjetivo>>) :
         val adjetivoPositivo = list[position].first
         val adjetivoNegativo = list[position].second
 
-        //viewHolder.imgViewPositive.setBackgroundResource(R.drawable.ic_emoji_positivo)
-        //viewHolder.imgViewNegative.setBackgroundResource(R.drawable.ic_emoji_negativo)
         viewHolder.imgViewPositive.setImageResource(R.drawable.ic_emoji_positivo)
         viewHolder.imgViewNegative.setImageResource(R.drawable.ic_emoji_negativo)
 
@@ -59,34 +57,35 @@ class AdjetivoAdapter(private var list: List<Pair<Adjetivo, Adjetivo>>) :
         viewHolder.rbNegative.setText(adjetivoNegativo.descricao)
 
         viewHolder.llPositive.setOnClickListener {
-            marcar(viewHolder, true)
+            marcar(viewHolder, true, list[position])
         }
 
         viewHolder.llNegative.setOnClickListener {
-            marcar(viewHolder, false)
+            marcar(viewHolder, false, list[position])
         }
 
         viewHolder.rbPositive.setOnClickListener {
-            marcar(viewHolder, true)
+            marcar(viewHolder, true, list[position])
         }
 
         viewHolder.rbNegative.setOnClickListener {
-            marcar(viewHolder, false)
+            marcar(viewHolder, false, list[position])
         }
-
     }
 
     private fun marcar(viewHolder: ViewHolder, opcao: Boolean, items: Pair<Adjetivo, Adjetivo>) {
         if(opcao){
             viewHolder.rbPositive.isChecked = true
             viewHolder.rbNegative.isChecked = false
-            listChecked.add(items.first)
+
             listChecked.remove(items.second)
+            listChecked.add(items.first)
         } else {
             viewHolder.rbPositive.isChecked = false
             viewHolder.rbNegative.isChecked = true
-            listChecked.add(items.second)
+
             listChecked.remove(items.first)
+            listChecked.add(items.second)
         }
     }
 
@@ -95,8 +94,10 @@ class AdjetivoAdapter(private var list: List<Pair<Adjetivo, Adjetivo>>) :
     fun getAllCheckedList() = listChecked
 
     fun allOptionsVerifyed() : Boolean {
-        return listChecked.size >= (list.size/2)
+        return listChecked.size >= list.size
     }
+
+    fun getCountChecked() = listChecked.size
 
     fun setList(list: List<Pair<Adjetivo, Adjetivo>>){
         this.list = list
