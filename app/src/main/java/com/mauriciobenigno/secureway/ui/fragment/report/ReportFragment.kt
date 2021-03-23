@@ -45,13 +45,9 @@ class ReportFragment : Fragment() {
     ): View? {
         val rootView: View = inflater.inflate(R.layout.report_fragment, container, false)
 
-        ll_positivo = rootView.findViewById(R.id.ll_escolha_positiva)
-        ll_negativo = rootView.findViewById(R.id.ll_escolha_negativa)
-        ib_positivo = rootView.findViewById(R.id.ib_positivo)
-        ib_negativo = rootView.findViewById(R.id.ib_negativo)
         recyclerView = rootView.findViewById(R.id.recyclerListAdjetivos)
 
-        recyclerView?.addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
+       // recyclerView?.addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
 
         return rootView
     }
@@ -60,7 +56,7 @@ class ReportFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ReportViewModel::class.java)
 
-        /*var lista = mutableListOf<Adjetivo>()
+        /*
         lista.add(Adjetivo(1,true, "teste 1"))
         lista.add(Adjetivo(2,true, "teste 3"))
         lista.add(Adjetivo(3,true, "teste sdsad"))
@@ -71,31 +67,19 @@ class ReportFragment : Fragment() {
         recyclerView?.setAdapter(AdjetivoAdapter(lista))*/
 
         doAsync {
-            recyclerView?.adapter = AdjetivoAdapter(viewModel.getAllAdjetivosPositivos())
-        }
+            val listPositive = viewModel.getAllAdjetivosPositivos()
+            val listNegative = viewModel.getAllAdjetivosNegativos()
 
-        ib_positivo?.setOnClickListener {
-            ll_positivo?.setBackgroundColor(Color.parseColor("#C6C6C6"))
-            ll_negativo?.setBackgroundColor(Color.WHITE)
-            posicao = false
-            doAsync {
-                val lista = viewModel.getAllAdjetivosPositivos()
-                runOnUiThread {
-                    recyclerView?.adapter = AdjetivoAdapter(lista)
-                }
+            val lista = mutableListOf<Pair<Adjetivo, Adjetivo>>()
+
+            var count = 0
+            for(item in listPositive){
+                lista.add(Pair(item,listNegative.get(count)))
+                count = count+1
             }
-        }
 
-        ib_negativo?.setOnClickListener {
-            ll_negativo?.setBackgroundColor(Color.parseColor("#C6C6C6"))
-            ll_positivo?.setBackgroundColor(Color.WHITE)
-            posicao = true
-
-            doAsync {
-                val lista = viewModel.getAllAdjetivosNegativos()
-                runOnUiThread {
-                    recyclerView?.adapter = AdjetivoAdapter(lista)
-                }
+            runOnUiThread {
+                recyclerView?.adapter = AdjetivoAdapter(lista)
             }
         }
 

@@ -1,6 +1,8 @@
 package com.mauriciobenigno.secureway.ui.activity.report
 
+import android.location.Address
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -23,6 +25,15 @@ class ReportActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         fragmentAtual = ReportFragment()
+
+
+        val extras = intent.extras
+
+        val endereco = extras!!.get("endereco") as Address
+
+        if (endereco.getAdminArea() != null && endereco.getAdminArea().length >= 2) {
+            Toast.makeText(this, endereco.getAdminArea(), Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onResume() {

@@ -30,80 +30,6 @@
                 android:textSize="24dp"
                 android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="24dp"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <LinearLayout
-                    android:id="@+id/ll_escolha_positiva"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.5"
-                    android:orientation="vertical">
-
-                    <ImageButton
-                        android:id="@+id/ib_positivo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:cropToPadding="false"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_emoji_positivo" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Positiva"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="18dp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_escolha_negativa"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:orientation="vertical">
-
-                    <ImageButton
-                        android:id="@+id/ib_negativo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_emoji_negativo" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Negativa"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="18dp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:gravity="center"
-                android:text="Por que.."
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="24dp"
-                android:textStyle="bold" />
-
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerListAdjetivos"
                 android:layout_width="match_parent"
@@ -111,7 +37,6 @@
                 android:layout_marginStart="14dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="14dp"
-                android:background="@drawable/background_search"
                 android:padding="4dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 

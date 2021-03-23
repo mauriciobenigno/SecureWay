@@ -37,6 +37,7 @@ import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.model.District
 import com.mauriciobenigno.secureway.model.Zona
 import com.mauriciobenigno.secureway.ui.activity.autenticacao.AutenticacaoActivity
+import com.mauriciobenigno.secureway.ui.activity.report.ReportActivity
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -212,11 +213,14 @@ class MapViewFragment : Fragment() {
                     .setMessage(Html.fromHtml(descricao))
                     .setNegativeButton("Não", null)
                     .setPositiveButton("Sim") { _, _ ->
+                        val intent = Intent(requireContext(), ReportActivity::class.java)
+                        intent.putExtra("endereco", mAddress)
+                        startActivity(intent)
                         doAsync {
-                            viewModel.saveZonaOnServer(Zona(0,mAddress!!.latitude,mAddress!!.longitude,500.0))
+                            /*viewModel.saveZonaOnServer(Zona(0,mAddress!!.latitude,mAddress!!.longitude,500.0))
                             uiThread {
                                 loadHeatMap(false)
-                            }
+                            }*/
                         }
                     }
                 val alert = builder.create()
