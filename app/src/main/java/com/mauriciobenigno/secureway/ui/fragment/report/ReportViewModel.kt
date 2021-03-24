@@ -25,11 +25,6 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
 
     fun getAllAdjetivosNegativos() = appRepository.getAllAdjetivosNegativos()
 
-
-    fun getZonaByLocation(coordenada: Coordenada): BlockingQueue<Zona> {
-        return appRepository.getZonaByLocation(coordenada)
-    }
-
     fun saveZonaOnServer(zona: Zona) {
         appRepository.saveZonaOnServer(zona)
     }

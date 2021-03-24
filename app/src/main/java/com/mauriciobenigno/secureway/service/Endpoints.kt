@@ -17,7 +17,7 @@ interface Endpoints {
     @POST("zonas/newpost")
     fun saveZonaOnServer(@Body zona: Zona) : Call<Zona>
 
-    @POST("reports/newreport")
+    @POST("report/newreport")
     fun saveReportOnServer(@Body report: Pair<Report, Coordenada> ) : Call<Report>
 
     @POST("zonas/regiao")
