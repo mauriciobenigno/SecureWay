@@ -11,13 +11,18 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.model.Adjetivo
+import com.mauriciobenigno.secureway.model.Coordenada
+import com.mauriciobenigno.secureway.model.Report
 import com.mauriciobenigno.secureway.model.Zona
 import com.mauriciobenigno.secureway.ui.adapter.AdjetivoAdapter
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 import org.jetbrains.anko.support.v4.runOnUiThread
+import java.util.*
 
 /*
 Créditos icones por https://www.flaticon.com/br/autores/kiranshastry"v
@@ -63,16 +68,6 @@ class ReportFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ReportViewModel::class.java)
 
-        /*
-        lista.add(Adjetivo(1,true, "teste 1"))
-        lista.add(Adjetivo(2,true, "teste 3"))
-        lista.add(Adjetivo(3,true, "teste sdsad"))
-        lista.add(Adjetivo(4,true, "teste dfdf"))
-        lista.add(Adjetivo(5,true, "teste dsdfsf"))
-        lista.add(Adjetivo(6,true, "teste qwqwqw"))
-
-        recyclerView?.setAdapter(AdjetivoAdapter(lista))*/
-
         doAsync {
             val listPositive = viewModel.getAllAdjetivosPositivos()
             val listNegative = viewModel.getAllAdjetivosNegativos()
@@ -93,9 +88,46 @@ class ReportFragment : Fragment() {
 
         btnGravarReport?.setOnClickListener {
             if(adapter?.allOptionsVerifyed() == true){
-                viewModel.saveZonaOnServer(Zona(0,endereco!!.latitude,endereco!!.longitude,500.0))
-                Toast.makeText(requireContext(), "Opinião registrada",Toast.LENGTH_LONG).show()
-                requireActivity().finish()
+
+                /*
+                * Sempre que a pontuação for ruim, vai juntar 200
+                * Até o momento a pontuação máxima é 1000, caso hajam mais advetivos no server, a pontuação máxima irá aumentar dinamicamente
+                *
+                * */
+
+                var pontuacao: Double = 0.0
+
+                adapter!!.getAllCheckedList().forEach {
+                    if(it.negativo == 1)
+                        pontuacao+=200
+                }
+
+
+                try {
+                    if(Firebase.auth.currentUser != null){
+
+                        var numeroString = Firebase.auth.currentUser!!.phoneNumber!!
+                        numeroString = numeroString.replace("+","")
+                        val numeroLong = numeroString.toLong()
+
+                        val report = Report(0, 0,numeroLong, Date().toString(),pontuacao, "sem observações")
+
+                        viewModel.saveReportOnServer(Pair(report,Coordenada(endereco!!.latitude,endereco!!.longitude)))
+
+                        Toast.makeText(requireContext(), "Opinião registrada",Toast.LENGTH_LONG).show()
+                        requireActivity().finish()
+
+                    } else {
+                        Toast.makeText(requireContext(), "Você não está logado!",Toast.LENGTH_LONG).show()
+                        //requireActivity().finish()
+                    }
+                }
+                catch (e: Exception){
+                    // Erro, futuramente colocar tela de erro
+                }
+
+
+
             } else {
                 Toast.makeText(requireContext(), "Marque uma opção em cada dupla",Toast.LENGTH_LONG).show()
             }

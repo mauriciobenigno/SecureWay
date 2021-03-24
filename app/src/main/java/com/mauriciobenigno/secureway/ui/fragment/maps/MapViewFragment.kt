@@ -2,6 +2,7 @@ package com.mauriciobenigno.secureway.ui
 
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -134,6 +135,8 @@ class MapViewFragment : Fragment() {
             })
 
         }
+
+        mMapView!!.onResume()
 
         fabButton = rootView.findViewById(R.id.fab) as ExtendedFloatingActionButton
 
@@ -296,13 +299,14 @@ class MapViewFragment : Fragment() {
         marker!!.remove()
     }
 
+    @SuppressLint("MissingPermission")
     private fun getLastKnownLocation(): Location? {
         mLocationManager =
             requireActivity().applicationContext.getSystemService(LOCATION_SERVICE) as LocationManager
         val providers = mLocationManager!!.getProviders(true)
         var bestLocation: Location? = null
         for (provider in providers) {
-            val l = mLocationManager!!.getLastKnownLocation(provider) ?: continue
+            val l = mLocationManager!!.getLastKnownLocation(provider) //?: continue
             if (bestLocation == null || l.accuracy < bestLocation.accuracy) {
                 bestLocation = l
             }

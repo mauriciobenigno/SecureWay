@@ -19,7 +19,7 @@ class AdjetivoAdapter(private var list: List<Pair<Adjetivo, Adjetivo>>) :
         val rbPositive: RadioButton
         val rbNegative: RadioButton
 
-
+        val tvTitulo: TextView
         val imgViewPositive: ImageView
         val imgViewNegative: ImageView
 
@@ -30,6 +30,8 @@ class AdjetivoAdapter(private var list: List<Pair<Adjetivo, Adjetivo>>) :
             rgOpcoes = view.findViewById(R.id.rgOpcoes)
             rbPositive = view.findViewById(R.id.rbPositive)
             rbNegative = view.findViewById(R.id.rbNegative)
+
+            tvTitulo = view.findViewById(R.id.tv_titulo)
 
             imgViewPositive = view.findViewById(R.id.img_positive)
             imgViewNegative = view.findViewById(R.id.img_negative)
@@ -50,11 +52,10 @@ class AdjetivoAdapter(private var list: List<Pair<Adjetivo, Adjetivo>>) :
         val adjetivoPositivo = list[position].first
         val adjetivoNegativo = list[position].second
 
+        viewHolder.tvTitulo.setText(adjetivoPositivo.descricao)
+
         viewHolder.imgViewPositive.setImageResource(R.drawable.ic_emoji_positivo)
         viewHolder.imgViewNegative.setImageResource(R.drawable.ic_emoji_negativo)
-
-        viewHolder.rbPositive.setText(adjetivoPositivo.descricao)
-        viewHolder.rbNegative.setText(adjetivoNegativo.descricao)
 
         viewHolder.llPositive.setOnClickListener {
             marcar(viewHolder, true, list[position])

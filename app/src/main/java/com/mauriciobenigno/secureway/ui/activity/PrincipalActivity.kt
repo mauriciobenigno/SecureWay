@@ -79,10 +79,10 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             ft.replace(R.id.container_frame, fragmentAtual!!)
             ft.commit()
 
-            if(fragmentAtual is MapViewFragment){
+           /* if(fragmentAtual is MapViewFragment){
                 // Atualizar o frament mapa com o novo ponto
                 (fragmentAtual as MapViewFragment).loadHeatMap(false)
-            }
+            }*/
         }
     }
 

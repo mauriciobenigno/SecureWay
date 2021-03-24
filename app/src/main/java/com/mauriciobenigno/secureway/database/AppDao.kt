@@ -2,10 +2,7 @@ package com.mauriciobenigno.secureway.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.mauriciobenigno.secureway.model.Adjetivo
-import com.mauriciobenigno.secureway.model.District
-import com.mauriciobenigno.secureway.model.Local
-import com.mauriciobenigno.secureway.model.Zona
+import com.mauriciobenigno.secureway.model.*
 
 @Dao
 interface AppDao {
@@ -45,6 +42,15 @@ interface AppDao {
 
     @Query("select * from sw_adjetivo where negativo = :posicao")
     fun getAllAdjetivosFiltrado(posicao: Boolean) : LiveData<List<Adjetivo>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addSingleReport(report: Report)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllReports(reports: List<Report>)
+
+    @Query("select * from sw_report")
+    fun getAllReports() : List<Report>
 
     /*@Query("select * from mxsprodut")
     fun getAllLiveProducts() : LiveData<List<Produto>>

@@ -14,6 +14,16 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
+        <TextView
+            android:id="@+id/tv_titulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Titulo do report"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
         <RadioGroup
             android:id="@+id/rgOpcoes"
             android:layout_width="match_parent"
@@ -43,7 +53,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="RadioButton"
+                    android:text="@string/txt_rb_positivo"
                     android:textCursorDrawable="@color/colorPrimaryDark" />
 
             </LinearLayout>
@@ -71,7 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="RadioButton" />
+                    android:text="@string/txt_rb_negativo" />
 
             </LinearLayout>
         </RadioGroup>

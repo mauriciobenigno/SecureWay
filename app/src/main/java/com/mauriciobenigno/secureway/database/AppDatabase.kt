@@ -12,7 +12,7 @@ import com.mauriciobenigno.secureway.model.*
     Adjetivo::class,
     Report::class,
     Zona::class
-], version = 9)
+], version = 11)
 
 abstract class AppDatabase : RoomDatabase() {
 

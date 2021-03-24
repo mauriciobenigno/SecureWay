@@ -1,24 +1,22 @@
 package com.mauriciobenigno.secureway.repository
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import android.location.LocationManager
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
-import com.google.gson.Gson
 import com.google.maps.android.heatmaps.WeightedLatLng
 import com.mauriciobenigno.secureway.database.AppDatabase
-import com.mauriciobenigno.secureway.model.Adjetivo
-import com.mauriciobenigno.secureway.model.Coordenada
-import com.mauriciobenigno.secureway.model.District
-import com.mauriciobenigno.secureway.model.Zona
+import com.mauriciobenigno.secureway.model.*
 import com.mauriciobenigno.secureway.service.ApiService
 import org.jetbrains.anko.doAsync
 import org.json.JSONArray
-
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.BlockingQueue
 
 
 class AppRepository(context: Context) {
@@ -40,10 +38,31 @@ class AppRepository(context: Context) {
         val zonas = database.Dao().getAllZonas()
         zonas.forEach {
             if(it.densidade != 0.0){
-                data.add(WeightedLatLng(LatLng(it.cordenada_x, it.cordenada_y), it.densidade))
+                data.add(WeightedLatLng(LatLng(it.coordenada_x, it.coordenada_y), it.densidade))
             }
         }
         return data
+    }
+
+    fun saveReportOnServer(report: Pair<Report, Coordenada>) {
+        val request = ApiService.getEndpoints()
+        request.saveReportOnServer(report).enqueue(
+            object : Callback<Report> {
+                override fun onFailure(call: Call<Report>, t: Throwable) {
+                    Log.e("Erro", "Erro ao cadastrar")
+                }
+
+                override fun onResponse(call: Call<Report>, response: Response<Report>) {
+                    if (response.code() == 201) {
+                        response.body()?.let {
+                            doAsync {
+                                database.Dao().addSingleReport(it)
+                            }
+                        }
+                    }
+                }
+            }
+        )
     }
 
     fun saveZonaOnServer(zona: Zona) {
@@ -55,10 +74,10 @@ class AppRepository(context: Context) {
                 }
 
                 override fun onResponse(call: Call<Zona>, response: Response<Zona>) {
-                    if(response.code() == 201) {
+                    if (response.code() == 201) {
                         response.body()?.let {
                             doAsync {
-                               database.Dao().addSingleZona(it)
+                                database.Dao().addSingleZona(it)
                             }
                         }
                     }
@@ -74,7 +93,10 @@ class AppRepository(context: Context) {
                 Log.wtf("Falha", "Requisição Falhou!")
             }
 
-            override fun onResponse(call: Call<List<District>>, response: Response<List<District>>) {
+            override fun onResponse(
+                call: Call<List<District>>,
+                response: Response<List<District>>
+            ) {
                 if (response.code() == 200) {
                     val resultado = response.body()
                     try {
@@ -83,8 +105,8 @@ class AppRepository(context: Context) {
                                 database.Dao().insertAllDistricts(districts)
                             }
                         }
-                    }catch (e: Exception){
-                        Log.e("ErroAPI",e.message!!)
+                    } catch (e: Exception) {
+                        Log.e("ErroAPI", e.message!!)
                     }
 
                 }
@@ -99,7 +121,10 @@ class AppRepository(context: Context) {
                 Log.wtf("Falha", "Requisição Falhou!")
             }
 
-            override fun onResponse(call: Call<List<Adjetivo>>, response: Response<List<Adjetivo>>) {
+            override fun onResponse(
+                call: Call<List<Adjetivo>>,
+                response: Response<List<Adjetivo>>
+            ) {
                 if (response.code() == 200) {
                     val resultado = response.body()
                     try {
@@ -108,13 +133,46 @@ class AppRepository(context: Context) {
                                 database.Dao().insertAllAdjetivos(adjetivos)
                             }
                         }
-                    }catch (e: Exception){
-                        Log.e("ErroAPI",e.message!!)
+                    } catch (e: Exception) {
+                        Log.e("ErroAPI", e.message!!)
                     }
                 }
             }
         })
     }
+
+    /*fun getZonaByLocation(coordenada: Coordenada) : BlockingQueue<Zona>{
+        val request = ApiService.getEndpoints()
+
+        val blockingQueue: BlockingQueue<Zona> = ArrayBlockingQueue(1)
+
+        request.getZonaByLocation(coordenada).enqueue(object : Callback<Zona> {
+            override fun onFailure(call: Call<Zona>, t: Throwable) {
+                Log.wtf("Falha", "Requisição Falhou!")
+
+            }
+
+            override fun onResponse(call: Call<Zona>, response: Response<Zona>) {
+                if (response.code() == 200) {
+                    val resultado = response.body()
+                    try {
+                        resultado?.let { zona ->
+                            doAsync {
+                                database.Dao().addSingleZona(zona)
+                                blockingQueue.add(zona)
+                            }
+
+                        }
+                    } catch (e: Exception) {
+                        Log.e("ErroAPI", e.message!!)
+                    }
+                }
+            }
+        })
+
+        return blockingQueue
+    }
+*/
 
 
     fun fetchZonasByLocationFromServer(context: Context) {
@@ -136,8 +194,8 @@ class AppRepository(context: Context) {
                                     database.Dao().insertAllZonas(zonas)
                                 }
                             }
-                        }catch (e: Exception){
-                            Log.e("ErroAPI",e.message!!)
+                        } catch (e: Exception) {
+                            Log.e("ErroAPI", e.message!!)
                         }
                     }
                 }
@@ -145,6 +203,7 @@ class AppRepository(context: Context) {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun getLastKnownLocation(context: Context): Location? {
         var mLocationManager: LocationManager? = null
         mLocationManager = context.applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager

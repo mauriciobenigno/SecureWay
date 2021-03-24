@@ -1,9 +1,6 @@
 package com.mauriciobenigno.secureway.service
 
-import com.mauriciobenigno.secureway.model.Adjetivo
-import com.mauriciobenigno.secureway.model.Coordenada
-import com.mauriciobenigno.secureway.model.District
-import com.mauriciobenigno.secureway.model.Zona
+import com.mauriciobenigno.secureway.model.*
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -20,8 +17,14 @@ interface Endpoints {
     @POST("zonas/newpost")
     fun saveZonaOnServer(@Body zona: Zona) : Call<Zona>
 
+    @POST("reports/newreport")
+    fun saveReportOnServer(@Body report: Pair<Report, Coordenada> ) : Call<Report>
+
     @POST("zonas/regiao")
     fun getZonasByLocation(@Body coordenada: Coordenada) : Call<List<Zona>>
+
+    @POST("zonas/proxima")
+    fun getZonaByLocation(@Body coordenada: Coordenada) : Call<Zona>
 
     /*@POST("produtos")
     fun saveProduct(@Body district : District) :  Call<District>*/
