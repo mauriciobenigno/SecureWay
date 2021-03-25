@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -33,6 +34,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.maps.android.heatmaps.Gradient
 import com.google.maps.android.heatmaps.HeatmapTileProvider
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.model.District
@@ -331,9 +333,18 @@ class MapViewFragment : Fragment() {
                 }
                 val data = viewModel.getHeatMapData()
 
+                val colors = intArrayOf(
+                    Color.rgb(0, 0, 0),
+                    Color.rgb(95, 51, 132)
+                )
+                val startPoints = floatArrayOf(0.6f, 1f)
+                val gradient = Gradient(colors, startPoints)
+
                 val heatMapProvider = HeatmapTileProvider.Builder()
                     .weightedData(data) // load our weighted data
                     .radius(50) // optional, in pixels, can be anything between 20 and 50
+                    .opacity(0.9)
+                    //.gradient(gradient)
                     .maxIntensity(1000.0) // set the maximum intensity
                     .build()
                 uiThread {

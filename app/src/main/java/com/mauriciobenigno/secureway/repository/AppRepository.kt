@@ -47,16 +47,20 @@ class AppRepository(context: Context) {
     fun saveReportOnServer(report: Pair<Report, Coordenada>) {
         val request = ApiService.getEndpoints()
         request.saveReportOnServer(report).enqueue(
-            object : Callback<Report> {
-                override fun onFailure(call: Call<Report>, t: Throwable) {
+            object : Callback<Pair<Report?, Zona?>> {
+                override fun onFailure(call: Call<Pair<Report?, Zona?>>, t: Throwable) {
                     Log.e("Erro", "Erro ao cadastrar")
                 }
 
-                override fun onResponse(call: Call<Report>, response: Response<Report>) {
+                override fun onResponse(call: Call<Pair<Report?, Zona?>>, response: Response<Pair<Report?, Zona?>>) {
                     if (response.code() == 201) {
                         response.body()?.let {
                             doAsync {
-                                database.Dao().addSingleReport(it)
+                                if(it.first != null)
+                                    database.Dao().addSingleReport(it.first!!)
+
+                                if(it.second != null)
+                                    database.Dao().addSingleZona(it.second!!)
                             }
                         }
                     }
