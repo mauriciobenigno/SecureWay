@@ -15,24 +15,13 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
 
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@+id/ll_botoes_report"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/img_map_preview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:padding="64dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="8dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_emoji_positivo" />
-
 
             <TextView
                 android:id="@+id/tv_zona_acao"
@@ -44,35 +33,129 @@
                 android:textSize="24dp"
                 android:textStyle="bold" />
 
+            <ImageView
+                android:id="@+id/img_map_preview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="64dp"
+                android:layout_marginEnd="64dp"
+                android:adjustViewBounds="true"
+                android:paddingStart="64dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="64dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_emoji_positivo" />
+
             <TextView
-                android:id="@+id/tv_data_report"
+                android:id="@+id/tv_zona_resultado"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Local"
+                android:text="Zona Segura"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="24dp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tv_pontuacao_report"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Local"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="24dp"
-                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tv_pontuacao_zona"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Local"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="24dp"
-                android:textStyle="bold" />
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tv_data_report"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Local"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:id="@+id/tv_pontuacao_report"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Local"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:id="@+id/tv_pontuacao_zona"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="left"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="20dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/background_search"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/tv_endereco_zona_CEP"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="left"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_endereco_zona_rua"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="left"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_endereco_zona_bairro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="left"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_endereco_zona_cidade"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="left"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_endereco_zona_estado"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="left"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
@@ -101,7 +184,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnEditarReport"
+                android:id="@+id/btnAlterarReport"
                 style="Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -111,7 +194,7 @@
                 android:paddingTop="8dp"
                 android:paddingRight="20dp"
                 android:paddingBottom="8dp"
-                android:text="Editar"
+                android:text="@string/txt_label_bt_alterar_report"
                 android:textAppearance="?android:textAppearanceLarge"
                 android:textStyle="bold" />
 

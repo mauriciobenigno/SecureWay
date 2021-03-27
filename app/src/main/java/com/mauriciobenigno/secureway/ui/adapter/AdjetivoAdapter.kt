@@ -13,7 +13,7 @@ class AdjetivoAdapter(private var list: List<Pair<Adjetivo, Adjetivo>>) :
     RecyclerView.Adapter<AdjetivoAdapter.ViewHolder>() {
 
     private val listChecked = mutableListOf<Adjetivo>()
-    private var listMarcadosString = mutableListOf<String>()
+   // private var listMarcadosString = mutableListOf<String>()
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val rgOpcoes: RadioGroup
@@ -53,13 +53,13 @@ class AdjetivoAdapter(private var list: List<Pair<Adjetivo, Adjetivo>>) :
         val adjetivoPositivo = list[position].first
         val adjetivoNegativo = list[position].second
 
-        if(listMarcadosString.size >= position + 1){
+        /*if(listMarcadosString.size >= position + 1){
             if(listMarcadosString[position] == "0"){
                 marcar(viewHolder, true, list[position])
             } else if (listMarcadosString[position] == "1"){
                 marcar(viewHolder, false, list[position])
             }
-        }
+        }*/
 
         viewHolder.tvTitulo.setText(adjetivoPositivo.descricao)
 
@@ -129,8 +129,8 @@ class AdjetivoAdapter(private var list: List<Pair<Adjetivo, Adjetivo>>) :
         this.list = list
     }
 
-    fun setListMarcados(list: MutableList<String>){
+    /*fun setListMarcados(list: MutableList<String>){
         this.listMarcadosString = list
-    }
+    }*/
 
 }

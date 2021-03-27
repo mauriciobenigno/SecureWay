@@ -100,14 +100,14 @@ class ReportFragment : Fragment() {
                 count = count+1
             }
 
-            if(reportZona != null){
+            /*if(reportZona != null){
                 listaMarcados = reportZona!!.report.observacao.split(",") as MutableList<String>
-            }
+            }*/
 
             runOnUiThread {
                 adapter = AdjetivoAdapter(lista)
-                if( listaMarcados.size > 0)
-                    adapter!!.setListMarcados(listaMarcados)
+                /*if( listaMarcados.size > 0)
+                    adapter!!.setListMarcados(listaMarcados)*/
                 recyclerView?.adapter = adapter
             }
         }
