@@ -1,19 +1,23 @@
 package com.mauriciobenigno.secureway.ui.fragment.report
 
 import android.content.Context
-import androidx.lifecycle.ViewModelProvider
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.model.*
-import com.mauriciobenigno.secureway.ui.activity.autenticacao.OnCommunicateInterface
 import com.mauriciobenigno.secureway.ui.activity.report.OnCommunicateReportInterface
-import java.util.*
+
 
 /*
 Créditos icones por https://www.flaticon.com/br/autores/kiranshastry"v
@@ -48,9 +52,22 @@ class ReportActionsFragment : Fragment() {
         val tvPontoReport = view.findViewById(R.id.tv_pontuacao_report) as TextView
         val tvPontoZona = view.findViewById(R.id.tv_pontuacao_zona) as TextView
 
+        val imgMapPreview = view.findViewById(R.id.img_map_preview) as ImageView
+
         val btnEditarReport = view.findViewById(R.id.btnEditarReport) as Button
 
+
+
         reportZona?.let {
+
+            /*Glide.with(this)
+                .load(Uri.decode(getGoogleImageURL("", it.zona.coordenada_x, it.zona.coordenada_y))) // image url
+                .placeholder(R.drawable.ic_emoji_positivo) // any placeholder to load at start
+                .error(R.drawable.ic_emoji_negativo)  // any image in case of error
+                .override(200, 200)// resizing
+                .centerCrop()
+                .into(imgMapPreview);  // imageview object
+*/
             tvZonaAcao.setText("Zona ID: ${it.report.id_zona}")
             tvDataReport.setText("Data: ${it.report.data_report}")
             tvPontoReport.setText("Ponto Zona: ${it.report.densidade}")
@@ -77,6 +94,10 @@ class ReportActionsFragment : Fragment() {
         } catch (e: Exception) {
             //Log.e("onAttach", e.toString())
         }
+    }
+
+    fun getGoogleImageURL(key: String,lati: Double, longi: Double): String {
+        return "http://maps.google.com/maps/api/staticmap?center=$lati%2C$longi&zoom=16&format=png&maptype=roadmap&mobile=false&markers=|color:%23128DD9|label:Marker|$lati%2C$longi&size=1000x400&key=$key&sensor=false"
     }
 
 }

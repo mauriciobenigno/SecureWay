@@ -72,7 +72,7 @@ class ReportFragment : Fragment() {
 
             }
             catch (e: Exception){
-                endereco = null
+                reportZona = null
             }
         }
 
@@ -134,8 +134,15 @@ class ReportFragment : Fragment() {
                         numeroString = numeroString.replace("+","")
                         val numeroLong = numeroString.toLong()
 
-                        val report = Report(0, 0,numeroLong, Date().toString(),pontuacao, sequencia)
-                        viewModel.saveReportOnServer(Pair(report,Coordenada(endereco!!.latitude,endereco!!.longitude)))
+                        // Se trata de edição
+                        if(reportZona!= null){
+                            val report = Report(reportZona!!.report.id_report, reportZona!!.report.id_zona,numeroLong, Date().toString(),pontuacao, sequencia)
+                            viewModel.saveReportOnServer(Pair(report,Coordenada(reportZona!!.zona.coordenada_x,reportZona!!.zona.coordenada_y)))
+                        }
+                        else {
+                            val report = Report(0, 0,numeroLong, Date().toString(),pontuacao, sequencia)
+                            viewModel.saveReportOnServer(Pair(report,Coordenada(endereco!!.latitude,endereco!!.longitude)))
+                        }
 
                         Toast.makeText(requireContext(), "Opinião registrada",Toast.LENGTH_LONG).show()
                         requireActivity().finish()
@@ -147,6 +154,7 @@ class ReportFragment : Fragment() {
                 }
                 catch (e: Exception){
                     // Erro, futuramente colocar tela de erro
+                    val teste = 0
                 }
 
 
