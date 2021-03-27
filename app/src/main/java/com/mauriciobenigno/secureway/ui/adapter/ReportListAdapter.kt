@@ -3,19 +3,15 @@ package com.mauriciobenigno.secureway.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.mauriciobenigno.secureway.R
-import com.mauriciobenigno.secureway.model.Report
 import com.mauriciobenigno.secureway.model.ReportZona
-import com.mauriciobenigno.secureway.model.Zona
-import com.mauriciobenigno.secureway.ui.fragment.report.ReportViewModel
-import org.jetbrains.anko.doAsync
 
 
-class ReportListAdapter(private var list: List<ReportZona>) :
+class ReportListAdapter(private var list: List<ReportZona>, private val listener: (ReportZona) -> Unit) :
     RecyclerView.Adapter<ReportListAdapter.ViewHolder>() {
-
 
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -41,6 +37,8 @@ class ReportListAdapter(private var list: List<ReportZona>) :
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val item = list[position]
 
+        viewHolder.itemView.setOnClickListener { listener(item) }
+
         viewHolder.tvTitulo.setText("Zona id = ${item.report.id_zona}")
         viewHolder.tvAvaliacao.setText("Avaliação: ${item.report.densidade} ")
         viewHolder.tvPontucao.setText("Pontos: ${item.zona.densidade}")
@@ -48,5 +46,4 @@ class ReportListAdapter(private var list: List<ReportZona>) :
     }
 
     override fun getItemCount() = list.size
-
 }

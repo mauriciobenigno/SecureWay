@@ -1,19 +1,19 @@
 package com.mauriciobenigno.secureway.ui.fragment.report
 
-import android.location.Address
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.RecyclerView
+import android.widget.Button
+import android.widget.TextView
 import com.mauriciobenigno.secureway.R
-import com.mauriciobenigno.secureway.model.ReportZona
-import com.mauriciobenigno.secureway.ui.adapter.ReportListAdapter
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.support.v4.runOnUiThread
+import com.mauriciobenigno.secureway.model.*
+import com.mauriciobenigno.secureway.ui.activity.autenticacao.OnCommunicateInterface
+import com.mauriciobenigno.secureway.ui.activity.report.OnCommunicateReportInterface
+import java.util.*
 
 /*
 Créditos icones por https://www.flaticon.com/br/autores/kiranshastry"v
@@ -26,48 +26,57 @@ class ReportActionsFragment : Fragment() {
 
     private lateinit var viewModel: ReportViewModel
 
-    private var recyclerView: RecyclerView? = null
+    var onCommunicate: OnCommunicateReportInterface? = null
 
-    private var adapter: ReportListAdapter? = null
 
-    private var endereco: Address? = null
+    private var reportZona: ReportZona? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView: View = inflater.inflate(R.layout.report_actions_fragment, container, false)
-        recyclerView = rootView.findViewById(R.id.recyclerListReports)
-
-        recyclerView?.addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
+        val view: View = inflater.inflate(R.layout.report_actions_fragment, container, false)
 
         val bundle = arguments
 
         if(bundle!= null){
-            endereco = bundle.get("endereco") as Address
+            reportZona = bundle.get("report") as ReportZona
         }
 
+        val tvZonaAcao = view.findViewById(R.id.tv_zona_acao) as TextView
+        val tvDataReport = view.findViewById(R.id.tv_data_report) as TextView
+        val tvPontoReport = view.findViewById(R.id.tv_pontuacao_report) as TextView
+        val tvPontoZona = view.findViewById(R.id.tv_pontuacao_zona) as TextView
 
-        return rootView
+        val btnEditarReport = view.findViewById(R.id.btnEditarReport) as Button
+
+        reportZona?.let {
+            tvZonaAcao.setText("Zona ID: ${it.report.id_zona}")
+            tvDataReport.setText("Data: ${it.report.data_report}")
+            tvPontoReport.setText("Ponto Zona: ${it.report.densidade}")
+            tvPontoZona.setText("Ponto Report: ${it.zona.densidade}")
+        }
+
+        btnEditarReport.setOnClickListener {
+            onCommunicate?.onClickEdit(reportZona)
+        }
+
+        return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(ReportViewModel::class.java)
+    }
 
-        doAsync {
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
 
-            val listaReportZona = mutableListOf<ReportZona>()
-            val listaReport = viewModel.get()
-
-            runOnUiThread {
-                adapter = ReportListAdapter(listaReport!!)
-                recyclerView?.adapter = adapter
-            }
-
-
+        try {
+            onCommunicate = context as OnCommunicateReportInterface
+        } catch (e: Exception) {
+            //Log.e("onAttach", e.toString())
         }
-
     }
 
 }

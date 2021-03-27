@@ -33,6 +33,8 @@ class AppRepository(context: Context) {
 
     fun getAllAdjetivosNegativos() = database.Dao().getAllAdjetivosNegativos()
 
+    fun getAllReports() = database.Dao().getAllReports()
+
     fun getZonaById(zona_id: Long) = database.Dao().getZonaById(zona_id)
 
     fun getHeatMapData(): ArrayList<WeightedLatLng> {

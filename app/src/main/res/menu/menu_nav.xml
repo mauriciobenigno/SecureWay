@@ -6,7 +6,7 @@
             android:title="Mapa" />
         <item android:id="@+id/nav_item_reports"
             android:icon="@android:drawable/ic_menu_agenda"
-            android:title="Meus reports" />
+            android:title="Meus Reports" />
         <item android:id="@+id/nav_item_three"
             android:icon="@android:drawable/ic_menu_call"
             android:title="Item 3" />

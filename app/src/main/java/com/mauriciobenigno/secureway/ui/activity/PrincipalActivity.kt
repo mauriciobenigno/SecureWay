@@ -16,16 +16,13 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.github.rtoshiro.util.format.MaskFormatter
-import com.google.android.gms.maps.MapFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.ui.MapViewFragment
 import com.mauriciobenigno.secureway.ui.activity.autenticacao.AutenticacaoActivity
-import com.mauriciobenigno.secureway.ui.fragment.report.ReportActionsFragment
-import org.w3c.dom.Text
+import com.mauriciobenigno.secureway.ui.fragment.report.ReportListFragment
 
 
 class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -111,7 +108,7 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 Toast.makeText(this, "Menu 1 - mapa", Toast.LENGTH_SHORT).show()
             }
             R.id.nav_item_reports -> {
-                fragmentAtual = ReportActionsFragment()
+                fragmentAtual = ReportListFragment()
                 val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.container_frame, fragmentAtual!!)
                 ft.commit()

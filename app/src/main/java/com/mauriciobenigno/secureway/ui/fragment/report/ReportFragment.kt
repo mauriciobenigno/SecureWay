@@ -111,8 +111,7 @@ class ReportFragment : Fragment() {
                         numeroString = numeroString.replace("+","")
                         val numeroLong = numeroString.toLong()
 
-                        val report = Report(0, 0,numeroLong, Date().toString(),pontuacao, "sem observações")
-
+                        val report = Report(0, 0,numeroLong, Date().toString(),pontuacao, sequencia)
                         viewModel.saveReportOnServer(Pair(report,Coordenada(endereco!!.latitude,endereco!!.longitude)))
 
                         Toast.makeText(requireContext(), "Opinião registrada",Toast.LENGTH_LONG).show()

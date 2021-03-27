@@ -6,7 +6,6 @@ import java.io.Serializable
 import java.util.*
 
 data class ReportZona(
-    @Embedded
     var report: Report,
     var zona: Zona
 ): Serializable

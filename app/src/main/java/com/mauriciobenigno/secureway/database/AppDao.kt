@@ -31,8 +31,8 @@ interface AppDao {
     @Query("select * from sw_zona")
     fun getAllZonas() : List<Zona>
 
-    @Query("select * from sw_zona where id_zona = :zona_id")
-    fun getZonaById(zona_id: Long) : List<Zona>
+    @Query("select * from sw_zona where id_zona = :zona_id limit 1")
+    fun getZonaById(zona_id: Long) : Zona
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllAdjetivos(adjetivos: List<Adjetivo>)
