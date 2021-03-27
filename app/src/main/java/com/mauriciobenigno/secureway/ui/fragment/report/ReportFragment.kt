@@ -1,6 +1,7 @@
 package com.mauriciobenigno.secureway.ui.fragment.report
 
 import android.location.Address
+import android.location.Geocoder
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,15 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.mauriciobenigno.secureway.R
-import com.mauriciobenigno.secureway.model.Adjetivo
-import com.mauriciobenigno.secureway.model.Coordenada
-import com.mauriciobenigno.secureway.model.Report
-import com.mauriciobenigno.secureway.model.Zona
+import com.mauriciobenigno.secureway.model.*
 import com.mauriciobenigno.secureway.ui.adapter.AdjetivoAdapter
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
@@ -43,6 +40,8 @@ class ReportFragment : Fragment() {
 
     private var endereco: Address? = null
 
+    private var reportZona: ReportZona? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -57,7 +56,24 @@ class ReportFragment : Fragment() {
         val bundle = arguments
 
         if(bundle!= null){
-            endereco = bundle.get("endereco") as Address
+            try {
+                endereco = bundle.get("endereco") as Address
+            }
+            catch (e: Exception){
+                endereco = null
+            }
+
+            try {
+                reportZona = bundle.get("report") as ReportZona
+                if (endereco == null){
+                    endereco = Geocoder(requireActivity().applicationContext).getFromLocation(
+                        reportZona?.zona?.coordenada_x!!,reportZona?.zona?.coordenada_y!!, 1)[0]
+                }
+
+            }
+            catch (e: Exception){
+                endereco = null
+            }
         }
 
 
@@ -73,6 +89,7 @@ class ReportFragment : Fragment() {
             val listNegative = viewModel.getAllAdjetivosNegativos()
 
             val lista = mutableListOf<Pair<Adjetivo, Adjetivo>>()
+            var listaMarcados = mutableListOf<String>()
 
             var count = 0
             for(item in listPositive){
@@ -80,8 +97,14 @@ class ReportFragment : Fragment() {
                 count = count+1
             }
 
+            if(reportZona != null){
+                listaMarcados = reportZona!!.report.observacao.split(",") as MutableList<String>
+            }
+
             runOnUiThread {
                 adapter = AdjetivoAdapter(lista)
+                if( listaMarcados.size > 0)
+                    adapter!!.setListMarcados(listaMarcados)
                 recyclerView?.adapter = adapter
             }
         }

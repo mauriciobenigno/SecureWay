@@ -62,9 +62,8 @@ class ReportActivity : AppCompatActivity() , OnCommunicateReportInterface {
         bundle.putAll(intent.extras)
         novoFragment.arguments = bundle
 
-        fragmentAtual = novoFragment
         val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.container_frame_report, fragmentAtual!!)
+        ft.replace(R.id.container_frame_report, novoFragment)
         ft.commit()
     }
 }
