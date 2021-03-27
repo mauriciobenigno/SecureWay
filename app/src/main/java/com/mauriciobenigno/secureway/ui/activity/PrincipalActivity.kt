@@ -1,5 +1,6 @@
 package com.mauriciobenigno.secureway.ui.activity
 
+import android.R.attr
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -16,17 +17,21 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.github.rtoshiro.util.format.MaskFormatter
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.ui.MapViewFragment
 import com.mauriciobenigno.secureway.ui.activity.autenticacao.AutenticacaoActivity
-import org.w3c.dom.Text
+import com.mauriciobenigno.secureway.ui.fragment.report.ReportListFragment
 
 
 class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    companion object {
+        var REQUEST_REPORT_CREATE = 998;
+        var REQUEST_REPORT_EDIT = 999;
+    }
 
     private var toolbar: Toolbar? = null
     private var drawerLayout: DrawerLayout? = null
@@ -48,7 +53,13 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
         drawerLayout = findViewById(R.id.drawerLayout)
 
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer)
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.open_drawer,
+            R.string.close_drawer
+        )
         drawerLayout!!.addDrawerListener(toggle)
 
         toggle.syncState()
@@ -71,6 +82,18 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         // Inicializar Framents
         fragmentMap = MapViewFragment()
         fragmentAtual = fragmentMap
+
+
+        if (fragmentAtual != null) {
+            val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+            ft.replace(R.id.container_frame, fragmentAtual!!)
+            ft.commit()
+
+           /* if(fragmentAtual is MapViewFragment){
+                // Atualizar o frament mapa com o novo ponto
+                (fragmentAtual as MapViewFragment).loadHeatMap(false)
+            }*/
+        }
     }
 
     private fun configurarContaDrawer(){
@@ -88,7 +111,9 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     override fun onResume() {
         super.onResume()
         configurarContaDrawer()
-        if (fragmentAtual != null) {
+
+        if(fragmentAtual is ReportListFragment){
+            fragmentAtual = ReportListFragment()
             val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
             ft.replace(R.id.container_frame, fragmentAtual!!)
             ft.commit()
@@ -97,13 +122,15 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_item_one -> {
+            R.id.nav_item_map -> {
                 fragmentAtual = fragmentMap
                 Toast.makeText(this, "Menu 1 - mapa", Toast.LENGTH_SHORT).show()
             }
-            R.id.nav_item_two -> {
-                fragmentAtual = fragmentMap
-                Toast.makeText(this, "Menu 2 - Mesmo mapa", Toast.LENGTH_SHORT).show()
+            R.id.nav_item_reports -> {
+                fragmentAtual = ReportListFragment()
+                val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+                ft.replace(R.id.container_frame, fragmentAtual!!)
+                ft.commit()
             }
             R.id.nav_item_three -> {
                 Toast.makeText(this, "Menu 3", Toast.LENGTH_SHORT).show()
@@ -131,6 +158,17 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         return true
     }
 
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode === REQUEST_REPORT_CREATE && resultCode === RESULT_OK) {
+            (fragmentAtual as MapViewFragment).loadHeatMap(false)
+        }
+        else  if (requestCode === REQUEST_REPORT_EDIT && resultCode === RESULT_OK) {
+            (fragmentAtual as ReportListFragment).configurarAdapter()
+        }
+    }
 
     override fun onBackPressed() {
         if (drawerLayout!!.isDrawerOpen(GravityCompat.START)) {

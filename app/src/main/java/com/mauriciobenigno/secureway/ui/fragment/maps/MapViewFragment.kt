@@ -2,9 +2,11 @@ package com.mauriciobenigno.secureway.ui
 
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -32,11 +34,14 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.maps.android.heatmaps.Gradient
 import com.google.maps.android.heatmaps.HeatmapTileProvider
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.model.District
 import com.mauriciobenigno.secureway.model.Zona
+import com.mauriciobenigno.secureway.ui.activity.PrincipalActivity.Companion.REQUEST_REPORT_CREATE
 import com.mauriciobenigno.secureway.ui.activity.autenticacao.AutenticacaoActivity
+import com.mauriciobenigno.secureway.ui.activity.report.ReportActivity
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -212,11 +217,15 @@ class MapViewFragment : Fragment() {
                     .setMessage(Html.fromHtml(descricao))
                     .setNegativeButton("Não", null)
                     .setPositiveButton("Sim") { _, _ ->
+                        val intent = Intent(requireContext(), ReportActivity::class.java)
+                        intent.putExtra("endereco", mAddress)
+                        requireActivity().startActivityForResult(intent, REQUEST_REPORT_CREATE)
+
                         doAsync {
-                            viewModel.saveZonaOnServer(Zona(0,mAddress!!.latitude,mAddress!!.longitude,500.0))
+                            /*viewModel.saveZonaOnServer(Zona(0,mAddress!!.latitude,mAddress!!.longitude,500.0))
                             uiThread {
                                 loadHeatMap(false)
-                            }
+                            }*/
                         }
                     }
                 val alert = builder.create()
@@ -227,7 +236,7 @@ class MapViewFragment : Fragment() {
             }
 
         }
-        loadHeatMap()
+        loadHeatMap(false)
     }
 
     override fun onPause() {
@@ -294,13 +303,14 @@ class MapViewFragment : Fragment() {
         marker!!.remove()
     }
 
+    @SuppressLint("MissingPermission")
     private fun getLastKnownLocation(): Location? {
         mLocationManager =
             requireActivity().applicationContext.getSystemService(LOCATION_SERVICE) as LocationManager
         val providers = mLocationManager!!.getProviders(true)
         var bestLocation: Location? = null
         for (provider in providers) {
-            val l = mLocationManager!!.getLastKnownLocation(provider) ?: continue
+            val l = mLocationManager!!.getLastKnownLocation(provider) //?: continue
             if (bestLocation == null || l.accuracy < bestLocation.accuracy) {
                 bestLocation = l
             }
@@ -325,15 +335,22 @@ class MapViewFragment : Fragment() {
                 }
                 val data = viewModel.getHeatMapData()
 
+                val colors = intArrayOf(
+                    Color.rgb(0, 0, 0),
+                    Color.rgb(95, 51, 132)
+                )
+                val startPoints = floatArrayOf(0.6f, 1f)
+                val gradient = Gradient(colors, startPoints)
+
                 val heatMapProvider = HeatmapTileProvider.Builder()
                     .weightedData(data) // load our weighted data
                     .radius(50) // optional, in pixels, can be anything between 20 and 50
+                    .opacity(0.9)
+                    //.gradient(gradient)
                     .maxIntensity(1000.0) // set the maximum intensity
                     .build()
-
                 uiThread {
                     googleMap!!.addTileOverlay(TileOverlayOptions().tileProvider(heatMapProvider))
-
                     if(moveToIndia){
                         val indiaLatLng = LatLng(20.5937, 78.9629)
                         googleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(indiaLatLng, 5f))

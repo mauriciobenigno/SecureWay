@@ -10,9 +10,9 @@ data class Local(
     @ColumnInfo(name = "id_local")
     val idLocal : Long,
     @ColumnInfo(name = "coordenada_x")
-    val cordenadaX : Float,
+    val coordenadaX : Float,
     @ColumnInfo(name = "coordenada_y")
-    val cordenadaY : Float,
+    val coordenadaY : Float,
     @ColumnInfo(name = "opinada")
     val status : Boolean
 )
