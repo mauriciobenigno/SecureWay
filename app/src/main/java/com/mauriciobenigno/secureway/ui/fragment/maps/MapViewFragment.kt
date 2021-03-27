@@ -39,6 +39,7 @@ import com.google.maps.android.heatmaps.HeatmapTileProvider
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.model.District
 import com.mauriciobenigno.secureway.model.Zona
+import com.mauriciobenigno.secureway.ui.activity.PrincipalActivity.Companion.REQUEST_REPORT_CREATE
 import com.mauriciobenigno.secureway.ui.activity.autenticacao.AutenticacaoActivity
 import com.mauriciobenigno.secureway.ui.activity.report.ReportActivity
 import org.jetbrains.anko.doAsync
@@ -218,7 +219,8 @@ class MapViewFragment : Fragment() {
                     .setPositiveButton("Sim") { _, _ ->
                         val intent = Intent(requireContext(), ReportActivity::class.java)
                         intent.putExtra("endereco", mAddress)
-                        startActivity(intent)
+                        requireActivity().startActivityForResult(intent, REQUEST_REPORT_CREATE)
+
                         doAsync {
                             /*viewModel.saveZonaOnServer(Zona(0,mAddress!!.latitude,mAddress!!.longitude,500.0))
                             uiThread {

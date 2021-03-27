@@ -1,9 +1,6 @@
 package com.mauriciobenigno.secureway.ui.fragment.report
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +10,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
 import com.mauriciobenigno.secureway.R
-import com.mauriciobenigno.secureway.model.*
+import com.mauriciobenigno.secureway.model.ReportZona
 import com.mauriciobenigno.secureway.ui.activity.report.OnCommunicateReportInterface
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /*
@@ -57,21 +55,13 @@ class ReportActionsFragment : Fragment() {
         val btnEditarReport = view.findViewById(R.id.btnEditarReport) as Button
 
 
-
         reportZona?.let {
 
-            /*Glide.with(this)
-                .load(Uri.decode(getGoogleImageURL("", it.zona.coordenada_x, it.zona.coordenada_y))) // image url
-                .placeholder(R.drawable.ic_emoji_positivo) // any placeholder to load at start
-                .error(R.drawable.ic_emoji_negativo)  // any image in case of error
-                .override(200, 200)// resizing
-                .centerCrop()
-                .into(imgMapPreview);  // imageview object
-*/
-            tvZonaAcao.setText("Zona ID: ${it.report.id_zona}")
+            tvZonaAcao.setText("Zona ID ${it.report.id_zona} / Report ID ${it.report.id_report}")
+
             tvDataReport.setText("Data: ${it.report.data_report}")
-            tvPontoReport.setText("Ponto Zona: ${it.report.densidade}")
-            tvPontoZona.setText("Ponto Report: ${it.zona.densidade}")
+            tvPontoReport.setText("Ponto Report: ${it.report.densidade}")
+            tvPontoZona.setText("Ponto Zona: ${it.zona.densidade}")
         }
 
         btnEditarReport.setOnClickListener {
@@ -94,10 +84,6 @@ class ReportActionsFragment : Fragment() {
         } catch (e: Exception) {
             //Log.e("onAttach", e.toString())
         }
-    }
-
-    fun getGoogleImageURL(key: String,lati: Double, longi: Double): String {
-        return "http://maps.google.com/maps/api/staticmap?center=$lati%2C$longi&zoom=16&format=png&maptype=roadmap&mobile=false&markers=|color:%23128DD9|label:Marker|$lati%2C$longi&size=1000x400&key=$key&sensor=false"
     }
 
 }

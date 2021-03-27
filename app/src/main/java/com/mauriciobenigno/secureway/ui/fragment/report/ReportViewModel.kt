@@ -37,4 +37,8 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
         appRepository.saveReportOnServer(report)
     }
 
+    fun updateReportOnServer(report: Report) {
+        appRepository.updateReportOnServer(report)
+    }
+
 }

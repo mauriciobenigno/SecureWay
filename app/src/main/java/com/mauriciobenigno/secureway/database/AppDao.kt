@@ -32,7 +32,7 @@ interface AppDao {
     fun getAllZonas() : List<Zona>
 
     @Query("select * from sw_zona where id_zona = :zona_id limit 1")
-    fun getZonaById(zona_id: Long) : Zona
+    fun getZonaById(zona_id: Long) : Zona?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllAdjetivos(adjetivos: List<Adjetivo>)
@@ -46,7 +46,7 @@ interface AppDao {
     @Query("select * from sw_adjetivo where negativo = :posicao")
     fun getAllAdjetivosFiltrado(posicao: Boolean) : LiveData<List<Adjetivo>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE) // quando um mais atual chegar, substitui
     fun addSingleReport(report: Report)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

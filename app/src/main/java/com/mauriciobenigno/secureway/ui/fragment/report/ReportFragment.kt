@@ -1,5 +1,6 @@
 package com.mauriciobenigno.secureway.ui.fragment.report
 
+import android.app.Activity
 import android.location.Address
 import android.location.Geocoder
 import androidx.lifecycle.ViewModelProvider
@@ -16,9 +17,11 @@ import com.google.firebase.ktx.Firebase
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.model.*
 import com.mauriciobenigno.secureway.ui.adapter.AdjetivoAdapter
+import com.mauriciobenigno.secureway.util.DateUtils
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 import org.jetbrains.anko.support.v4.runOnUiThread
+import org.jetbrains.anko.uiThread
 import java.util.*
 
 /*
@@ -130,22 +133,29 @@ class ReportFragment : Fragment() {
                 try {
                     if(Firebase.auth.currentUser != null){
 
-                        var numeroString = Firebase.auth.currentUser!!.phoneNumber!!
-                        numeroString = numeroString.replace("+","")
-                        val numeroLong = numeroString.toLong()
+                        Toast.makeText(requireContext(), "Enviando Opinião",Toast.LENGTH_LONG).show()
+                        doAsync {
+                            var numeroString = Firebase.auth.currentUser!!.phoneNumber!!
+                            numeroString = numeroString.replace("+","")
+                            val numeroLong = numeroString.toLong()
 
-                        // Se trata de edição
-                        if(reportZona!= null){
-                            val report = Report(reportZona!!.report.id_report, reportZona!!.report.id_zona,numeroLong, Date().toString(),pontuacao, sequencia)
-                            viewModel.saveReportOnServer(Pair(report,Coordenada(reportZona!!.zona.coordenada_x,reportZona!!.zona.coordenada_y)))
-                        }
-                        else {
-                            val report = Report(0, 0,numeroLong, Date().toString(),pontuacao, sequencia)
-                            viewModel.saveReportOnServer(Pair(report,Coordenada(endereco!!.latitude,endereco!!.longitude)))
+                            // Se trata de edição
+                            if(reportZona!= null){
+                                val report = Report(reportZona!!.report.id_report, reportZona!!.report.id_zona,numeroLong, DateUtils.getFormatedDate(Date()),pontuacao, sequencia)
+                                viewModel.updateReportOnServer(report)
+                            }
+                            else {
+                                val report = Report(0, 0,numeroLong, DateUtils.getFormatedDate(Date()),pontuacao, sequencia)
+                                viewModel.saveReportOnServer(Pair(report,Coordenada(endereco!!.latitude,endereco!!.longitude)))
+                            }
+
+                            uiThread {
+                                Toast.makeText(requireContext(), "Opinião registrada",Toast.LENGTH_LONG).show()
+                                requireActivity().setResult(Activity.RESULT_OK)
+                                requireActivity().finish()
+                            }
                         }
 
-                        Toast.makeText(requireContext(), "Opinião registrada",Toast.LENGTH_LONG).show()
-                        requireActivity().finish()
 
                     } else {
                         Toast.makeText(requireContext(), "Você não está logado!",Toast.LENGTH_LONG).show()

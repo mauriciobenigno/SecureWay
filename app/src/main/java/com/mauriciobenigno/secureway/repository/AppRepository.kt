@@ -48,7 +48,7 @@ class AppRepository(context: Context) {
         return data
     }
 
-    fun saveReportOnServer(report: Pair<Report, Coordenada>) {
+    fun asyncSaveReportOnServer(report: Pair<Report, Coordenada>) {
         val request = ApiService.getEndpoints()
         request.saveReportOnServer(report).enqueue(
             object : Callback<Pair<Report?, Zona?>> {
@@ -71,6 +71,73 @@ class AppRepository(context: Context) {
                 }
             }
         )
+    }
+
+    fun saveReportOnServer(report: Pair<Report, Coordenada>) {
+        val request = ApiService.getEndpoints()
+        val call = request.saveReportOnServer(report)
+
+        val response =  call.execute()
+
+        if(response.isSuccessful){
+            response.body()?.let {
+                doAsync {
+                    if(it.first != null)
+                        database.Dao().addSingleReport(it.first!!)
+
+                    if(it.second != null)
+                        database.Dao().addSingleZona(it.second!!)
+                }
+            }
+        }else {
+            throw Exception("Ocorreu um erro ao enviar seu report!")
+        }
+    }
+
+    fun asyncUpdateReportOnServer(report: Report){
+        val request = ApiService.getEndpoints()
+        request.updateReportOnServer(report).enqueue(
+            object : Callback<Pair<Report?, Zona?>> {
+                override fun onFailure(call: Call<Pair<Report?, Zona?>>, t: Throwable) {
+                    Log.e("Erro", "Erro ao atualizar report")
+                }
+
+                override fun onResponse(call: Call<Pair<Report?, Zona?>>, response: Response<Pair<Report?, Zona?>>) {
+                    if (response.code() == 201) {
+                        response.body()?.let {
+                            doAsync {
+                                if(it.first != null)
+                                    database.Dao().addSingleReport(it.first!!)
+
+                                if(it.second != null)
+                                    database.Dao().addSingleZona(it.second!!)
+                            }
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+    // Método sincrono
+    fun updateReportOnServer(report: Report){
+        val request = ApiService.getEndpoints()
+        val call = request.updateReportOnServer(report)
+        val response =  call.execute()
+
+        if(response.isSuccessful){
+            response.body()?.let {
+
+                if(it.first != null)
+                    database.Dao().addSingleReport(it.first!!)
+
+                if(it.second != null)
+                    database.Dao().addSingleZona(it.second!!)
+                return
+            }
+        }else {
+            throw Exception("Ocorreu um erro ao enviar seu report!")
+        }
     }
 
     fun saveZonaOnServer(zona: Zona) {

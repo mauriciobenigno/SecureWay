@@ -1,5 +1,6 @@
 package com.mauriciobenigno.secureway.ui.activity
 
+import android.R.attr
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -27,6 +28,11 @@ import com.mauriciobenigno.secureway.ui.fragment.report.ReportListFragment
 
 class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    companion object {
+        var REQUEST_REPORT_CREATE = 998;
+        var REQUEST_REPORT_EDIT = 999;
+    }
+
     private var toolbar: Toolbar? = null
     private var drawerLayout: DrawerLayout? = null
     private var navigationView: NavigationView? = null
@@ -47,7 +53,13 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
         drawerLayout = findViewById(R.id.drawerLayout)
 
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer)
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.open_drawer,
+            R.string.close_drawer
+        )
         drawerLayout!!.addDrawerListener(toggle)
 
         toggle.syncState()
@@ -99,6 +111,13 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     override fun onResume() {
         super.onResume()
         configurarContaDrawer()
+
+        if(fragmentAtual is ReportListFragment){
+            fragmentAtual = ReportListFragment()
+            val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+            ft.replace(R.id.container_frame, fragmentAtual!!)
+            ft.commit()
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -139,6 +158,17 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         return true
     }
 
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode === REQUEST_REPORT_CREATE && resultCode === RESULT_OK) {
+            (fragmentAtual as MapViewFragment).loadHeatMap(false)
+        }
+        else  if (requestCode === REQUEST_REPORT_EDIT && resultCode === RESULT_OK) {
+            (fragmentAtual as ReportListFragment).configurarAdapter()
+        }
+    }
 
     override fun onBackPressed() {
         if (drawerLayout!!.isDrawerOpen(GravityCompat.START)) {
