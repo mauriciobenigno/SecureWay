@@ -24,6 +24,7 @@ import com.google.firebase.ktx.Firebase
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.ui.MapViewFragment
 import com.mauriciobenigno.secureway.ui.activity.autenticacao.AutenticacaoActivity
+import com.mauriciobenigno.secureway.ui.fragment.report.ReportActionsFragment
 import org.w3c.dom.Text
 
 
@@ -105,13 +106,15 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_item_one -> {
+            R.id.nav_item_map -> {
                 fragmentAtual = fragmentMap
                 Toast.makeText(this, "Menu 1 - mapa", Toast.LENGTH_SHORT).show()
             }
-            R.id.nav_item_two -> {
-                fragmentAtual = fragmentMap
-                Toast.makeText(this, "Menu 2 - Mesmo mapa", Toast.LENGTH_SHORT).show()
+            R.id.nav_item_reports -> {
+                fragmentAtual = ReportActionsFragment()
+                val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+                ft.replace(R.id.container_frame, fragmentAtual!!)
+                ft.commit()
             }
             R.id.nav_item_three -> {
                 Toast.makeText(this, "Menu 3", Toast.LENGTH_SHORT).show()

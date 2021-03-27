@@ -102,6 +102,7 @@ class ReportFragment : Fragment() {
                         pontuacao+=200
                 }
 
+                val sequencia = adapter!!.getCheckedSequence()
 
                 try {
                     if(Firebase.auth.currentUser != null){

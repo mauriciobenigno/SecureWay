@@ -25,6 +25,8 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
 
     fun getAllAdjetivosNegativos() = appRepository.getAllAdjetivosNegativos()
 
+    fun getZonaById(zonaId: Long) = appRepository.getZonaById(zonaId)
+
     fun saveZonaOnServer(zona: Zona) {
         appRepository.saveZonaOnServer(zona)
     }

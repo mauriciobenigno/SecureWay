@@ -90,6 +90,22 @@ class AdjetivoAdapter(private var list: List<Pair<Adjetivo, Adjetivo>>) :
         }
     }
 
+    fun getCheckedSequence() : String{
+        var sequencia = ""
+
+        for(i in 0 until  list.size){
+            if(list.get(i).first.equals(listChecked.get(i))){
+                sequencia+="0,"
+            } else if (list.get(i).second.equals(listChecked.get(i))){
+                sequencia+="1,"
+            }
+        }
+
+        if(!sequencia.isEmpty())
+            sequencia = sequencia.subSequence(0,sequencia.length-1) as String
+       return sequencia
+    }
+
     override fun getItemCount() = list.size
 
     fun getAllCheckedList() = listChecked
