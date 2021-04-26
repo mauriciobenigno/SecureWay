@@ -132,17 +132,21 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 ft.replace(R.id.container_frame, fragmentAtual!!)
                 ft.commit()
             }
-            R.id.nav_item_three -> {
-                Toast.makeText(this, "Menu 3", Toast.LENGTH_SHORT).show()
-            }
             R.id.nav_item_four -> {
                 Toast.makeText(this, "Menu 4", Toast.LENGTH_SHORT).show()
             }
-            R.id.nav_item_sair -> {
-                Firebase.auth.signOut()
-                configurarContaDrawer()
-                Toast.makeText(this, "Saindo da conta", Toast.LENGTH_SHORT).show()
+            R.id.nav_item_sair_conta -> {
 
+                if(Firebase.auth.currentUser != null){
+                    Firebase.auth.signOut()
+                    configurarContaDrawer()
+                    Toast.makeText(this, "Saindo da conta", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Você não está logado!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            R.id.nav_item_sair -> {
+                exibirDialogSaida()
             }
             else -> {
                 Toast.makeText(this, "Menu default", Toast.LENGTH_SHORT).show()
@@ -174,14 +178,7 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         if (drawerLayout!!.isDrawerOpen(GravityCompat.START)) {
             drawerLayout!!.closeDrawer(GravityCompat.START)
         } else {
-                val builder = AlertDialog.Builder(this)
-                builder.setMessage("Você deseja sair do aplicativo?")
-                    .setNegativeButton("Não", null)
-                    .setPositiveButton("Sim") { _, _ ->
-                        super.onBackPressed()
-                    }
-                val alert = builder.create()
-                alert.show()
+            exibirDialogSaida()
         }
     }
 
@@ -195,4 +192,14 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         return super.onOptionsItemSelected(item)
     }
 
+    private fun exibirDialogSaida(){
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Você deseja sair do aplicativo?")
+            .setNegativeButton("Não", null)
+            .setPositiveButton("Sim") { _, _ ->
+                super.onBackPressed()
+            }
+        val alert = builder.create()
+        alert.show()
+    }
 }

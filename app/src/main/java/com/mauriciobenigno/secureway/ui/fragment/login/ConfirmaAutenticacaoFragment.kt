@@ -3,6 +3,7 @@ package com.mauriciobenigno.secureway.ui.fragment.login
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -118,25 +119,27 @@ class ConfirmaAutenticacaoFragment : Fragment() {
         }
 
         override fun onVerificationFailed(e: FirebaseException) {
-            var mensagem: String
-
-            if (e is FirebaseAuthInvalidCredentialsException) {
-                mensagem = e.message.toString()
-            } else if (e is FirebaseTooManyRequestsException) {
-                mensagem = "Foram feitas várias tentativas de login com esse numero!\nTente novamente mais tarde!"
-            }
-            else{
-                mensagem = e.message.toString()
-            }
-
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Ocorreu um erro!")
-                .setMessage(mensagem)
-                .setPositiveButton("OK") { _, _ ->
-                    activity?.finish()
+            var mensagem = "Erro desconhecido."
+            try{
+                if (e is FirebaseAuthInvalidCredentialsException) {
+                   mensagem = e.message.toString()
+                } else if (e is FirebaseTooManyRequestsException) {
+                   mensagem = "Foram feitas várias tentativas de login com esse numero!\nTente novamente mais tarde!"
                 }
-                .show()
-
+                else{
+                   mensagem = e.message.toString()
+                }
+                MaterialAlertDialogBuilder(requireContext())
+                   .setTitle("Ocorreu um erro!")
+                   .setMessage(mensagem)
+                   .setPositiveButton("OK") { _, _ ->
+                       activity?.finish()
+                   }
+                   .show()
+            }
+            catch (e: Exception){
+                Log.e("ERROR_AUTH", mensagem)
+            }
         }
 
         override fun onCodeSent(
