@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.mauriciobenigno.secureway.R
@@ -33,6 +34,8 @@ class ReportListFragment : Fragment() {
 
     private var recyclerView: RecyclerView? = null
 
+    private var txtListaVazia: TextView? = null
+
     private var adapter: ReportListAdapter? = null
 
     override fun onCreateView(
@@ -40,6 +43,7 @@ class ReportListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView: View = inflater.inflate(R.layout.report_list_fragment, container, false)
+        txtListaVazia = rootView.findViewById(R.id.txt_lista_vazia)
         recyclerView = rootView.findViewById(R.id.recyclerListReports)
 
         recyclerView?.addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
@@ -73,14 +77,28 @@ class ReportListFragment : Fragment() {
             }
 
             runOnUiThread {
-                adapter = ReportListAdapter(listaReportZona!!){ reportZona ->
-                    val intent = Intent(requireContext(), ReportActivity::class.java)
-                    intent.putExtra("tela_avancada", true)
-                    intent.putExtra("report", reportZona)
-                    requireActivity().startActivityForResult(intent, REQUEST_REPORT_EDIT)
-                }
 
-                recyclerView?.adapter = adapter
+                if(listaReport.isEmpty()){
+                    txtListaVazia?.let {
+                        it.visibility = View.VISIBLE
+                        recyclerView?.visibility = View.GONE
+                    }
+                }
+                else {
+                    txtListaVazia?.let {
+                        it.visibility = View.GONE
+                        recyclerView?.visibility = View.VISIBLE
+                    }
+
+                    adapter = ReportListAdapter(listaReportZona!!){ reportZona ->
+                        val intent = Intent(requireContext(), ReportActivity::class.java)
+                        intent.putExtra("tela_avancada", true)
+                        intent.putExtra("report", reportZona)
+                        requireActivity().startActivityForResult(intent, REQUEST_REPORT_EDIT)
+                    }
+
+                    recyclerView?.adapter = adapter
+                }
             }
         }
     }
