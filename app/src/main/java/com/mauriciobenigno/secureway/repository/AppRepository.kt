@@ -11,7 +11,6 @@ import com.mauriciobenigno.secureway.database.AppDatabase
 import com.mauriciobenigno.secureway.model.*
 import com.mauriciobenigno.secureway.service.ApiService
 import org.jetbrains.anko.doAsync
-import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,6 +36,8 @@ class AppRepository(context: Context) {
 
     fun getZonaById(zona_id: Long) = database.Dao().getZonaById(zona_id)
 
+    //fun getZonasByLocation(Coo: Long) = database.Dao().getZonaById(zona_id)
+
     fun getHeatMapData(): ArrayList<WeightedLatLng> {
         val data = ArrayList<WeightedLatLng>()
         val zonas = database.Dao().getAllZonas()
@@ -56,14 +57,17 @@ class AppRepository(context: Context) {
                     Log.e("Erro", "Erro ao cadastrar")
                 }
 
-                override fun onResponse(call: Call<Pair<Report?, Zona?>>, response: Response<Pair<Report?, Zona?>>) {
+                override fun onResponse(
+                    call: Call<Pair<Report?, Zona?>>,
+                    response: Response<Pair<Report?, Zona?>>
+                ) {
                     if (response.code() == 201) {
                         response.body()?.let {
                             doAsync {
-                                if(it.first != null)
+                                if (it.first != null)
                                     database.Dao().addSingleReport(it.first!!)
 
-                                if(it.second != null)
+                                if (it.second != null)
                                     database.Dao().addSingleZona(it.second!!)
                             }
                         }
@@ -102,14 +106,17 @@ class AppRepository(context: Context) {
                     Log.e("Erro", "Erro ao atualizar report")
                 }
 
-                override fun onResponse(call: Call<Pair<Report?, Zona?>>, response: Response<Pair<Report?, Zona?>>) {
+                override fun onResponse(
+                    call: Call<Pair<Report?, Zona?>>,
+                    response: Response<Pair<Report?, Zona?>>
+                ) {
                     if (response.code() == 201) {
                         response.body()?.let {
                             doAsync {
-                                if(it.first != null)
+                                if (it.first != null)
                                     database.Dao().addSingleReport(it.first!!)
 
-                                if(it.second != null)
+                                if (it.second != null)
                                     database.Dao().addSingleZona(it.second!!)
                             }
                         }
@@ -216,6 +223,35 @@ class AppRepository(context: Context) {
         })
     }
 
+
+    fun getZonaByLocation(coordenada: Coordenada) : Zona? {
+
+        val request = ApiService.getEndpoints()
+        val call = request.getZonaByLocation(coordenada)
+        val response =  call.execute()
+
+        if(response.isSuccessful){
+            response.body()?.let {
+                database.Dao().addSingleZona(it)
+                return it
+            }
+        }else {
+            /*val zona = database.Dao().getZonaByLocation(coordenada.latitude, coordenada.longitude)
+            val results = FloatArray(1)
+            if(zona != null) {
+                Location.distanceBetween(
+                    coordenada.latitude,
+                    coordenada.longitude,
+                    zona.coordenada_x,
+                    zona.coordenada_y,
+                    results
+                )
+                return zona
+            }*/
+        }
+        return null
+    }
+
     /*fun getZonaByLocation(coordenada: Coordenada) : BlockingQueue<Zona>{
         val request = ApiService.getEndpoints()
 
@@ -292,26 +328,5 @@ class AppRepository(context: Context) {
         }
         return bestLocation
     }
-
-    /*fun saveProductOnServer(product: Produto) {
-        val request = ApiService.getEndpoints()
-        request.saveProduct(product).enqueue(
-            object : Callback<Produto> {
-                override fun onFailure(call: Call<Produto>, t: Throwable) {
-                    Log.e("Erro", "Erro ao cadastrar")
-                }
-
-                override fun onResponse(call: Call<Produto>, response: Response<Produto>) {
-                    if(response.code() == 201) {
-                        response.body()?.let {
-                            doAsync {
-                                database.Dao().addSingleProduct(it)
-                            }
-                        }
-                    }
-                }
-            }
-        )
-    }*/
 
 }

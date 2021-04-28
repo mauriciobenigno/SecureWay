@@ -34,6 +34,10 @@ interface AppDao {
     @Query("select * from sw_zona where id_zona = :zona_id limit 1")
     fun getZonaById(zona_id: Long) : Zona?
 
+    //@Query("select * from sw_zona where id_zona = :zona_id limit 1")
+    @Query("SELECT * FROM sw_zona ORDER BY ((:latitude-sw_zona.coordenada_x)*(:latitude-sw_zona.coordenada_y)) + ((:longitude - sw_zona.coordenada_x)*(:longitude - sw_zona.coordenada_y)) ASC LIMIT 1")
+    fun getZonaByLocation(latitude: Double, longitude: Double) : Zona?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllAdjetivos(adjetivos: List<Adjetivo>)
 
