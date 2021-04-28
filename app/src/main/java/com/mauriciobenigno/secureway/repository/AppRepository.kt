@@ -34,6 +34,8 @@ class AppRepository(context: Context) {
 
     fun getAllReports() = database.Dao().getAllReports()
 
+    fun deleteReport(id_report: Long) = database.Dao().deleteReport(id_report)
+
     fun getZonaById(zona_id: Long) = database.Dao().getZonaById(zona_id)
 
     //fun getZonasByLocation(Coo: Long) = database.Dao().getZonaById(zona_id)
@@ -146,6 +148,27 @@ class AppRepository(context: Context) {
             throw Exception("Ocorreu um erro ao enviar seu report!")
         }
     }
+
+    // Método sincrono
+    fun deleteReportOnServer(report: Report): Boolean{
+        val request = ApiService.getEndpoints()
+        val call = request.deleteReportOnServer(report)
+        val response =  call.execute()
+
+        if(response.isSuccessful){
+            response.body()?.let {
+                if(it){
+                    this.deleteReport(report.id_report)
+                    return true
+                } else {
+                    throw Exception("Ocorreu um erro tentar excluir seu report na nuvem!")
+                }
+            }
+        }else {
+            throw Exception("Ocorreu um erro ao enviar seu report!")
+        }
+    }
+
 
     fun saveZonaOnServer(zona: Zona) {
         val request = ApiService.getEndpoints()

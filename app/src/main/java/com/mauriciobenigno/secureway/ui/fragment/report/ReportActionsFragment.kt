@@ -65,6 +65,7 @@ class ReportActionsFragment : Fragment() {
         val imgMapPreview = view.findViewById(R.id.img_map_preview) as ImageView
 
         val btnAlterarReport = view.findViewById(R.id.btnAlterarReport) as Button
+        val btnDeletarReport = view.findViewById(R.id.btnExcluirReport) as Button
 
 
         reportZona?.let {
@@ -119,6 +120,10 @@ class ReportActionsFragment : Fragment() {
 
         btnAlterarReport.setOnClickListener {
             onCommunicate?.onClickEdit(reportZona)
+        }
+
+        btnDeletarReport.setOnClickListener {
+            reportZona?.let { it1 -> viewModel.deleteReportOnServer(it1.report) }
         }
 
         return view

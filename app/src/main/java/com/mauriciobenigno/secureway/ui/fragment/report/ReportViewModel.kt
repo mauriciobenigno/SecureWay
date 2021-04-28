@@ -41,4 +41,10 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
         appRepository.updateReportOnServer(report)
     }
 
+    fun deleteReportOnServer(report: Report) : Boolean {
+        appRepository.deleteReportOnServer(report)
+    }
+
+
+
 }

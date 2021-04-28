@@ -53,6 +53,9 @@ interface AppDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE) // quando um mais atual chegar, substitui
     fun addSingleReport(report: Report)
 
+    @Query("delete from sw_report where id_report = :id_report")
+    fun deleteReport(id_report: Long)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllReports(reports: List<Report>)
 
