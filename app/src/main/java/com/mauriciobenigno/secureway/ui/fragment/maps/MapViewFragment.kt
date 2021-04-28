@@ -32,16 +32,15 @@ import com.google.android.gms.maps.model.TileOverlayOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.google.maps.android.heatmaps.Gradient
 import com.google.maps.android.heatmaps.HeatmapTileProvider
 import com.mauriciobenigno.secureway.R
-import com.mauriciobenigno.secureway.model.District
+import com.mauriciobenigno.secureway.model.Coordenada
 import com.mauriciobenigno.secureway.model.Zona
 import com.mauriciobenigno.secureway.ui.activity.PrincipalActivity.Companion.REQUEST_REPORT_CREATE
 import com.mauriciobenigno.secureway.ui.activity.autenticacao.AutenticacaoActivity
 import com.mauriciobenigno.secureway.ui.activity.report.ReportActivity
+import com.mauriciobenigno.secureway.ui.adapter.InfoRegiaoAdapter
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -106,36 +105,49 @@ class MapViewFragment : Fragment() {
                             // Atualizando lugar
                             mAddress = Geocoder(requireActivity().applicationContext).getFromLocation(target.latitude,target.longitude, 1)[0]
                         }
-                        catch (e: java.lang.Exception){
+                        catch (e: Exception){
                             // Não está num endereço válido
+                            Log.e("Erro ao mostrar info", e.message)
                         }
 
+                        googleMap!!.setInfoWindowAdapter(InfoRegiaoAdapter(context))
 
                         // Atualizando marker
-                        if (marker != null) {
+                        if (marker != null)
                             marker!!.remove()
-                            marker = googleMap!!.addMarker(
-                                MarkerOptions().position(target).draggable(
-                                    true
-                                )
-                            )
-                        } else {
-                            marker = googleMap!!.addMarker(
-                                MarkerOptions().position(target).draggable(
-                                    true
-                                )
-                            )
+
+                        marker = googleMap!!.addMarker(MarkerOptions().position(target).draggable(true))
+
+                        doAsync {
+                            // Carregar a zona a partir da coordenada
+
+                            if (viewModel != null){
+                                val zona = viewModel.getZonaByLocation(Coordenada(target.latitude, target.longitude)) as Zona?
+
+                                uiThread {
+                                    try{
+                                        if(zona != null ){
+                                            marker!!.tag = zona
+                                            marker!!.showInfoWindow();
+                                        }
+                                    }
+                                    catch (e: Exception){
+                                        Log.e("Erro ao mostrar info", e?.message)
+                                    }
+                                }
+                            }
                         }
+
                     }
                 }
             })
 
-            googleMap!!.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener {
+            /*googleMap!!.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener {
                 override fun onMarkerClick(p0: Marker?): Boolean {
                     Toast.makeText(context, "VOCÊ CLICOU NUMA ZONA", Toast.LENGTH_LONG).show()
                     return true
                 }
-            })
+            })*/
 
         }
 

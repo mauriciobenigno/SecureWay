@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import com.google.maps.android.heatmaps.WeightedLatLng
+import com.mauriciobenigno.secureway.model.Coordenada
 import com.mauriciobenigno.secureway.model.Zona
 import com.mauriciobenigno.secureway.repository.AppRepository
 
@@ -33,4 +34,10 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     fun saveZonaOnServer(zona: Zona) {
         appRepository.saveZonaOnServer(zona)
     }
+
+    fun getZonaByLocation(coordenada: Coordenada): Zona? {
+        return appRepository.getZonaByLocation(coordenada)
+    }
+
+
 }
