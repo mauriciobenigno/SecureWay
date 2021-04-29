@@ -1,6 +1,7 @@
 package com.mauriciobenigno.secureway.ui.fragment.report
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.location.Address
 import android.location.Geocoder
 import androidx.lifecycle.ViewModelProvider
@@ -132,8 +133,13 @@ class ReportFragment : Fragment() {
 
                 try {
                     if(Firebase.auth.currentUser != null){
+                        val progressDialog = ProgressDialog(requireContext())
+                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+                        progressDialog.setTitle("Criando reporte")
+                        progressDialog.setMessage("Enviando Opinião")
+                        progressDialog.setCancelable(false)
+                        progressDialog.show()
 
-                        Toast.makeText(requireContext(), "Enviando Opinião",Toast.LENGTH_LONG).show()
                         doAsync {
                             var numeroString = Firebase.auth.currentUser!!.phoneNumber!!
                             numeroString = numeroString.replace("+","")
@@ -150,6 +156,7 @@ class ReportFragment : Fragment() {
                             }
 
                             uiThread {
+                                progressDialog.dismiss()
                                 Toast.makeText(requireContext(), "Opinião registrada",Toast.LENGTH_LONG).show()
                                 requireActivity().setResult(Activity.RESULT_OK)
                                 requireActivity().finish()

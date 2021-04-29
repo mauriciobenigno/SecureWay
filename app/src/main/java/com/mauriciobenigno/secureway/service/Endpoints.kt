@@ -3,6 +3,7 @@ package com.mauriciobenigno.secureway.service
 import com.mauriciobenigno.secureway.model.*
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 
@@ -22,7 +23,12 @@ interface Endpoints {
 
     @POST("report/update")
     fun updateReportOnServer(@Body report: Report ) : Call<Pair<Report?, Zona?>>
-   // fun saveReportOnServer(@Body report: Pair<Report, Coordenada> ) : Call<Report>
+
+    @POST("report/delete")
+    fun deleteReportOnServer(@Body report: Report ) : Call<Boolean>
+
+    @GET("zonas/all")
+    fun getAllZonas() : Call<List<Zona>>
 
     @POST("zonas/regiao")
     fun getZonasByLocation(@Body coordenada: Coordenada) : Call<List<Zona>>
