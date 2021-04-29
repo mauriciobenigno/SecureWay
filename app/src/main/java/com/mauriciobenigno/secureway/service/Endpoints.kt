@@ -24,8 +24,11 @@ interface Endpoints {
     @POST("report/update")
     fun updateReportOnServer(@Body report: Report ) : Call<Pair<Report?, Zona?>>
 
-    @DELETE("report/delete")
+    @POST("report/delete")
     fun deleteReportOnServer(@Body report: Report ) : Call<Boolean>
+
+    @GET("zonas/all")
+    fun getAllZonas() : Call<List<Zona>>
 
     @POST("zonas/regiao")
     fun getZonasByLocation(@Body coordenada: Coordenada) : Call<List<Zona>>

@@ -13,10 +13,6 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 
     private val appRepository = AppRepository(application)
 
-    init {
-        appRepository.fetchLocationsFromServer()
-    }
-
     fun getZoneDataFromServer(context: Context) {
         appRepository.fetchZonasByLocationFromServer(context)
     }

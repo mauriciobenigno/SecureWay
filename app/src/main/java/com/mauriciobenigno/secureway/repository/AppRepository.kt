@@ -167,6 +167,7 @@ class AppRepository(context: Context) {
         }else {
             throw Exception("Ocorreu um erro ao enviar seu report!")
         }
+        return false
     }
 
 
@@ -191,32 +192,52 @@ class AppRepository(context: Context) {
         )
     }
 
-    fun fetchLocationsFromServer() {
+    fun fetchZonasFromServer() {
         val request = ApiService.getEndpoints()
-        request.getAllDistricts().enqueue(object : Callback<List<District>> {
-            override fun onFailure(call: Call<List<District>>, t: Throwable) {
+        request.getAllZonas().enqueue(object : Callback<List<Zona>> {
+            override fun onFailure(call: Call<List<Zona>>, t: Throwable) {
                 Log.wtf("Falha", "Requisição Falhou!")
             }
 
             override fun onResponse(
-                call: Call<List<District>>,
-                response: Response<List<District>>
+                call: Call<List<Zona>>,
+                response: Response<List<Zona>>
             ) {
                 if (response.code() == 200) {
                     val resultado = response.body()
                     try {
-                        resultado?.let { districts ->
+                        resultado?.let { zonas ->
                             doAsync {
-                                database.Dao().insertAllDistricts(districts)
+                                database.Dao().insertAllZonas(zonas)
                             }
                         }
                     } catch (e: Exception) {
                         Log.e("ErroAPI", e.message!!)
                     }
-
                 }
             }
         })
+    }
+
+    fun asyncFetchZonasFromServer() {
+        val request = ApiService.getEndpoints()
+        val call = request.getAllZonas()
+        val response =  call.execute()
+        if(response.isSuccessful){
+            val resultado = response.body()
+            try {
+                resultado?.let { zonas ->
+                    doAsync {
+                        database.Dao().insertAllZonas(zonas)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("ErroAPI", e.message!!)
+                throw Exception("Report excluído, porém ocorreu um erro: ${e.message} ")
+            }
+        } else{
+            throw Exception("Report excluído, porém houve um erro ao atualizar zonas!")
+        }
     }
 
     fun fetchAdjetivoFromServer() {

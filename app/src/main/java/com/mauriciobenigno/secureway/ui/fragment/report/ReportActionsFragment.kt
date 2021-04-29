@@ -1,7 +1,7 @@
 package com.mauriciobenigno.secureway.ui.fragment.report
 
+import android.app.ProgressDialog
 import android.content.Context
-import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import android.text.Html
@@ -11,14 +11,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.model.ReportZona
 import com.mauriciobenigno.secureway.ui.activity.report.OnCommunicateReportInterface
 import com.mauriciobenigno.secureway.util.ScoreUtils
-import java.text.SimpleDateFormat
-import java.util.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
 
 /*
@@ -84,7 +85,11 @@ class ReportActionsFragment : Fragment() {
                     imgMapPreview.setImageResource(R.drawable.ic_emoji_negativo)
                 }
 
-                val endereco = Geocoder(requireActivity().applicationContext).getFromLocation(it.coordenada_x,it.coordenada_y, 1)[0]
+                val endereco = Geocoder(requireActivity().applicationContext).getFromLocation(
+                    it.coordenada_x,
+                    it.coordenada_y,
+                    1
+                )[0]
                 if (endereco.getThoroughfare() != null) {
                     tvRua.setText(Html.fromHtml("<b>" + "Rua: " + "</b>" + endereco.getThoroughfare()))
                 }else{
@@ -123,7 +128,62 @@ class ReportActionsFragment : Fragment() {
         }
 
         btnDeletarReport.setOnClickListener {
-            reportZona?.let { it1 -> viewModel.deleteReportOnServer(it1.report) }
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setMessage("Deseja realmente excluir esse reporte?")
+                .setNegativeButton("Não", null)
+                .setPositiveButton("Sim") { _, _ ->
+                    val progressDialog = ProgressDialog(requireContext())
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+                    progressDialog.setTitle("Exclusão de Reporte")
+                    progressDialog.setCancelable(true)
+                    progressDialog.show()
+                    doAsync {
+                        reportZona?.let { it1 ->
+                            progressDialog.setMessage("Excluindo o reporte ${it1.report.id_report} da zona ${it1.report.id_zona}!")
+                            progressDialog.show()
+
+                            try {
+                                if (viewModel.deleteReportOnServer(it1.report)) {
+                                    uiThread {
+                                        progressDialog.setMessage("Atualizando zonas da aplicação!")
+                                        progressDialog.show()
+                                    }
+
+                                    viewModel.asyncFetchZonasFromServer()
+
+                                    uiThread {
+                                        progressDialog.dismiss()
+                                        AlertDialog.Builder(requireContext())
+                                            .setMessage("Report excluído!")
+                                            .setNeutralButton("Sim") { _, _ ->
+                                                activity?.finish()
+                                            }
+                                            .show()
+                                    }
+                                } else {
+                                    AlertDialog.Builder(requireContext())
+                                        .setTitle("Aviso!")
+                                        .setMessage("Não foi possível excluir!")
+                                        .setNeutralButton("OK", null)
+                                        .show()
+                                }
+                            }
+                            catch (e: Exception){
+                                uiThread {
+                                    progressDialog.dismiss()
+                                    AlertDialog.Builder(requireContext())
+                                        .setTitle("Erro!")
+                                        .setMessage(e.message)
+                                        .setNeutralButton("OK", null)
+                                        .show()
+                                }
+                            }
+                        }
+                    }
+                }
+
+            val alert = builder.create()
+            alert.show()
         }
 
         return view

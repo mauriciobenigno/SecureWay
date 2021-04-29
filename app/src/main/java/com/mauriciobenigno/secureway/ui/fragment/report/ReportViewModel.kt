@@ -13,10 +13,19 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
 
     init {
         appRepository.fetchAdjetivoFromServer()
+        appRepository.fetchZonasFromServer()
     }
 
     fun refreshData() {
         appRepository.fetchAdjetivoFromServer()
+    }
+
+    fun fetchZonasFromServer() {
+        appRepository.fetchZonasFromServer()
+    }
+
+    fun asyncFetchZonasFromServer() {
+        appRepository.asyncFetchZonasFromServer()
     }
 
     fun getAllAdjetivosFiltrado(posicao: Boolean) = appRepository.getAllAdjetivosFiltrado(posicao)
@@ -42,7 +51,7 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun deleteReportOnServer(report: Report) : Boolean {
-        appRepository.deleteReportOnServer(report)
+        return appRepository.deleteReportOnServer(report)
     }
 
 
