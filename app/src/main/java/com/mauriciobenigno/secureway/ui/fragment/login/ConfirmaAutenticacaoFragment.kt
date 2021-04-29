@@ -189,11 +189,10 @@ class ConfirmaAutenticacaoFragment : Fragment() {
                             }
                         }
 
-                    Toast.makeText(requireContext(), "Sucesso!", Toast.LENGTH_SHORT).show()
 
                     val progressDialog = ProgressDialog(requireContext())
                     progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-                    progressDialog.setCancelable(false)
+                    progressDialog.setCancelable(true)
 
                     doAsync {
 
@@ -212,7 +211,7 @@ class ConfirmaAutenticacaoFragment : Fragment() {
                                 progressDialog.show()
                             }
 
-                            viewModel.getReportsByUser(vNumero)
+                            viewModel.getReportsByUser("55${vNumero}")
 
                             uiThread {
                                 progressDialog.setMessage("Baixando suas zonas!")

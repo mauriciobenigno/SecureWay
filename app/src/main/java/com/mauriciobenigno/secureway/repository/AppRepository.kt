@@ -112,9 +112,10 @@ class AppRepository(context: Context) {
 
         if(response.isSuccessful){
             response.body()?.let {
-                doAsync {
+                database.Dao().insertAllReports(it)
+                /*doAsync {
                     database.Dao().insertAllReports(it)
-                }
+                }*/
             }
         } else {
             throw Exception("Ocorreu um erro ao baixar seus report!")

@@ -20,6 +20,6 @@ data class Report (
     @ColumnInfo(name = "densidade")
     var densidade: Double,
     @ColumnInfo(name = "observacao")
-    var observacao: String
+    var observacao: String? = null
 ): Serializable
 
