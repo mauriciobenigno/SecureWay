@@ -1,5 +1,6 @@
 package com.mauriciobenigno.secureway.ui.fragment.login
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
@@ -20,10 +22,15 @@ import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.mauriciobenigno.secureway.R
+import com.mauriciobenigno.secureway.ui.MapViewModel
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.util.concurrent.TimeUnit
 
 
 class ConfirmaAutenticacaoFragment : Fragment() {
+
+    lateinit var viewModel : AuthViewModel
 
     private var storedVerificationId: String? = null
     private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
@@ -47,7 +54,11 @@ class ConfirmaAutenticacaoFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+    }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -178,12 +189,63 @@ class ConfirmaAutenticacaoFragment : Fragment() {
                             }
                         }
 
-                    MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Autenticação realizada com sucesso!")
-                        .setPositiveButton("OK") { _, _ ->
-                            activity?.finish()
+
+                    val progressDialog = ProgressDialog(requireContext())
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+                    progressDialog.setCancelable(true)
+
+                    doAsync {
+
+                        uiThread {
+                            progressDialog.setTitle("Autenticação realizada com sucesso!")
+                            progressDialog.setMessage("Baixando adjetivos!")
+                            progressDialog.show()
                         }
-                        .show()
+
+                        try {
+
+                            viewModel.syncFetchAdjetivosFromServer()
+
+                            uiThread {
+                                progressDialog.setMessage("Baixando seus reportes!")
+                                progressDialog.show()
+                            }
+
+                            viewModel.getReportsByUser("55${vNumero}")
+
+                            uiThread {
+                                progressDialog.setMessage("Baixando suas zonas!")
+                                progressDialog.show()
+                            }
+
+                            viewModel.syncFetchZonasFromServer()
+
+                            uiThread {
+                                progressDialog.dismiss()
+                                MaterialAlertDialogBuilder(requireContext())
+                                    .setTitle("Sucesso!")
+                                    .setMessage("Autenticação realizada e dados baixados com sucesso!")
+                                    .setPositiveButton("OK") { _, _ ->
+                                        progressDialog.dismiss()
+                                        activity?.finish()
+                                    }
+                                    .show()
+                            }
+                        }
+                        catch (e: Exception) {
+                            uiThread {
+                                progressDialog.dismiss()
+                                MaterialAlertDialogBuilder(requireContext())
+                                    .setTitle("Atenção!")
+                                    .setMessage("Autenticação realizada porém ocorreu um problema a baixar os dados!")
+                                    .setPositiveButton("OK") { _, _ ->
+                                        activity?.finish()
+                                    }
+                                    .show()
+                            }
+                        }
+
+                    }
 
                 } else {
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {

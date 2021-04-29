@@ -5,6 +5,8 @@ import android.content.Context
 import android.location.Location
 import android.location.LocationManager
 import android.util.Log
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.heatmaps.WeightedLatLng
 import com.mauriciobenigno.secureway.database.AppDatabase
@@ -37,6 +39,8 @@ class AppRepository(context: Context) {
     fun deleteReport(id_report: Long) = database.Dao().deleteReport(id_report)
 
     fun getZonaById(zona_id: Long) = database.Dao().getZonaById(zona_id)
+
+    fun insertAllReports(reports: List<Report>) = database.Dao().insertAllReports(reports)
 
     //fun getZonasByLocation(Coo: Long) = database.Dao().getZonaById(zona_id)
 
@@ -97,6 +101,24 @@ class AppRepository(context: Context) {
             }
         }else {
             throw Exception("Ocorreu um erro ao enviar seu report!")
+        }
+    }
+
+    fun getReportsByUser(numero: String) {
+        val request = ApiService.getEndpoints()
+        val call = request.getReportsByUser(numero)
+
+        val response =  call.execute()
+
+        if(response.isSuccessful){
+            response.body()?.let {
+                database.Dao().insertAllReports(it)
+                /*doAsync {
+                    database.Dao().insertAllReports(it)
+                }*/
+            }
+        } else {
+            throw Exception("Ocorreu um erro ao baixar seus report!")
         }
     }
 
@@ -219,7 +241,7 @@ class AppRepository(context: Context) {
         })
     }
 
-    fun asyncFetchZonasFromServer() {
+    fun syncFetchZonasFromServer() {
         val request = ApiService.getEndpoints()
         val call = request.getAllZonas()
         val response =  call.execute()
@@ -237,6 +259,27 @@ class AppRepository(context: Context) {
             }
         } else{
             throw Exception("Report excluído, porém houve um erro ao atualizar zonas!")
+        }
+    }
+
+
+    fun syncFetchAdjetivosFromServer() {
+        val request = ApiService.getEndpoints()
+        val call = request.getAllAdjetivos()
+        val response =  call.execute()
+        if(response.isSuccessful){
+            val resultado = response.body()
+            try {
+                resultado?.let { zonas ->
+                    doAsync {
+                        database.Dao().insertAllAdjetivos(zonas)
+                    }
+                }
+            } catch (e: Exception) {
+                throw Exception("Erro ao salvar adjetivos: ${e.message} ")
+            }
+        } else{
+            throw Exception("Erro ao buscar adjetivos no servidor!")
         }
     }
 
