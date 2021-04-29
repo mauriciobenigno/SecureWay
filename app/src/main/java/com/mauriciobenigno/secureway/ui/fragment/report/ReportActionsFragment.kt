@@ -149,7 +149,7 @@ class ReportActionsFragment : Fragment() {
                                         progressDialog.show()
                                     }
 
-                                    viewModel.asyncFetchZonasFromServer()
+                                    viewModel.syncFetchZonasFromServer()
 
                                     uiThread {
                                         progressDialog.dismiss()

@@ -24,8 +24,8 @@ class ReportViewModel(application: Application) : AndroidViewModel(application) 
         appRepository.fetchZonasFromServer()
     }
 
-    fun asyncFetchZonasFromServer() {
-        appRepository.asyncFetchZonasFromServer()
+    fun syncFetchZonasFromServer() {
+        appRepository.syncFetchZonasFromServer()
     }
 
     fun getAllAdjetivosFiltrado(posicao: Boolean) = appRepository.getAllAdjetivosFiltrado(posicao)

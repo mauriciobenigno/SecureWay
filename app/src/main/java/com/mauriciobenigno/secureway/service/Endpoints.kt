@@ -36,6 +36,10 @@ interface Endpoints {
     @POST("zonas/proxima")
     fun getZonaByLocation(@Body coordenada: Coordenada) : Call<Zona>
 
+    @POST("report/user")
+    fun getReportsByUser(@Body numero: String) : Call<List<Report>>
+
+
     /*@POST("produtos")
     fun saveProduct(@Body district : District) :  Call<District>*/
 
