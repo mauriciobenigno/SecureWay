@@ -9,4 +9,12 @@
     <string name="txt_rb_negativo">Não</string>
     <string name="txt_label_opiniao">Sua região tem..</string>
     <string name="txt_label_bt_alterar_report">Alterar</string>
+
+    <!-- Tradução do tutorial-->
+    <string name="app_intro_skip_button">Pular</string>
+    <string name="app_intro_next_button">Próx.</string>
+    <string name="app_intro_back_button">Voltar</string>
+    <string name="app_intro_done_button">Pronto</string>
+    <string name="app_intro_image_content_description">Gráfico</string>
+
 </resources>
