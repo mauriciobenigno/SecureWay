@@ -107,7 +107,7 @@ class MapViewFragment : Fragment() {
                         }
                         catch (e: Exception){
                             // Não está num endereço válido
-                            Log.e("Erro ao mostrar info", e.message)
+                            e?.message?.let { Log.e("Erro ao mostrar info", it) }
                         }
 
                         googleMap!!.setInfoWindowAdapter(InfoRegiaoAdapter(context))
@@ -132,7 +132,11 @@ class MapViewFragment : Fragment() {
                                         }
                                     }
                                     catch (e: Exception){
-                                        Log.e("Erro ao mostrar info", e?.message)
+                                        e?.message?.let { it1 ->
+                                            Log.e("Erro ao mostrar info",
+                                                it1
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -244,7 +248,7 @@ class MapViewFragment : Fragment() {
                 alert.show()
             }
             catch (e : Exception){
-                Log.e("ErroGeocoder", e.message)
+                e.message?.let { it1 -> Log.e("ErroGeocoder", it1) }
             }
 
         }
@@ -323,8 +327,10 @@ class MapViewFragment : Fragment() {
         var bestLocation: Location? = null
         for (provider in providers) {
             val l = mLocationManager!!.getLastKnownLocation(provider) //?: continue
-            if (bestLocation == null || l.accuracy < bestLocation.accuracy) {
-                bestLocation = l
+            if (l != null) {
+                if (bestLocation == null || l.accuracy < bestLocation.accuracy) {
+                    bestLocation = l
+                }
             }
         }
         return bestLocation

@@ -44,6 +44,9 @@
         <activity
             android:name=".ui.activity.autenticacao.AutenticacaoActivity"
             android:screenOrientation="portrait"/>
+
+        <activity android:name=".ui.activity.tutorial.TutorialActivity"
+            android:label="My Custom AppIntro" />
     </application>
 
 </manifest>
