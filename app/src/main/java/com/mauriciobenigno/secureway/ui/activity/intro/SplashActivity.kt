@@ -12,6 +12,8 @@ import com.mauriciobenigno.secureway.ui.activity.PrincipalActivity
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.repository.AppRepository
 import com.mauriciobenigno.secureway.ui.activity.report.ReportActivity
+import com.mauriciobenigno.secureway.ui.activity.tutorial.TutorialActivity
+import com.mauriciobenigno.secureway.util.Preferences
 
 class SplashActivity : AppCompatActivity() , Runnable {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,8 +26,13 @@ class SplashActivity : AppCompatActivity() , Runnable {
     }
 
     override fun run() {
-        val intent = Intent(this, PrincipalActivity::class.java)
-        //val intent = Intent(this, ReportActivity::class.java)
+        // Verifica se já visualizou o tutorial
+        val intent = if(Preferences(this).completouTutorial){
+            Intent(this, PrincipalActivity::class.java)
+        } else {
+            Intent(this, TutorialActivity::class.java)
+        }
+
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         this.finish()
