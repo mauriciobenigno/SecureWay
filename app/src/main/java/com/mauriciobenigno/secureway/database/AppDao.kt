@@ -62,6 +62,12 @@ interface AppDao {
     @Query("select * from sw_report")
     fun getAllReports() : List<Report>
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllFaq(reports: List<Faq>)
+
+    @Query("select * from sw_faq")
+    fun getAllFaq() : List<Faq>
+
     /*@Query("select * from mxsprodut")
     fun getAllLiveProducts() : LiveData<List<Produto>>
 

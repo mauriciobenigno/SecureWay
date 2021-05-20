@@ -39,6 +39,9 @@ interface Endpoints {
     @POST("report/user")
     fun getReportsByUser(@Body numero: String) : Call<List<Report>>
 
+    @GET("faq/all")
+    fun getAllFaq() : Call<List<Faq>>
+
 
     /*@POST("produtos")
     fun saveProduct(@Body district : District) :  Call<District>*/

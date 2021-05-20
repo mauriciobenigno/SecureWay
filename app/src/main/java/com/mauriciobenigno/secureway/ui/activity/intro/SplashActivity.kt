@@ -46,5 +46,6 @@ class SplashActivity : AppCompatActivity() , Runnable {
         // Fazer fetch de dados
         AppRepository(application).fetchZonasByLocationFromServer(application)
         AppRepository(application).fetchAdjetivoFromServer()
+        AppRepository(application).fetchFaqFromServer()
     }
 }
