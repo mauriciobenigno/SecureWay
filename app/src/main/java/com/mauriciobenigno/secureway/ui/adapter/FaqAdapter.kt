@@ -1,16 +1,20 @@
 package com.mauriciobenigno.secureway.ui.adapter
 import android.content.Context
 import android.graphics.Typeface
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
 import com.mauriciobenigno.secureway.R
+import org.jetbrains.anko.layoutInflater
 import java.util.*
 
 
-class FaqAdapter(private val _listDataHeader: List<String>, private val _listDataChild: HashMap<String, List<String>>) : BaseExpandableListAdapter() {
+class FaqAdapter  internal constructor(
+    private val context: Context,
+    private val _listDataHeader: List<String>,
+    private val _listDataChild: HashMap<String, List<String>>
+) : BaseExpandableListAdapter(){
 
     override fun getChild(groupPosition: Int, childPosititon: Int): String? {
         return _listDataChild[_listDataHeader[groupPosition]]?.get(childPosititon)
@@ -22,12 +26,16 @@ class FaqAdapter(private val _listDataHeader: List<String>, private val _listDat
 
     override fun getChildView(
         groupPosition: Int, childPosition: Int,
-        isLastChild: Boolean, convertView: View, parent: ViewGroup
+        isLastChild: Boolean, convertView: View?, parent: ViewGroup
     ): View {
+        var convertViewChild = convertView
         val childText = getChild(groupPosition, childPosition) as String
-        val txtListChild = convertView.findViewById<View>(R.id.tvDescricaoFaq) as TextView
+        if (convertViewChild == null) {
+            convertViewChild = this.context.layoutInflater.inflate(R.layout.faq_item, null)
+        }
+        val txtListChild = convertViewChild?.findViewById<View>(R.id.tvDescricaoFaq) as TextView
         txtListChild.text = childText
-        return convertView
+        return convertViewChild!!
     }
 
     override fun getChildrenCount(groupPosition: Int): Int {
@@ -46,15 +54,17 @@ class FaqAdapter(private val _listDataHeader: List<String>, private val _listDat
         return groupPosition.toLong()
     }
 
-    override fun getGroupView(
-        groupPosition: Int, isExpanded: Boolean,
-        convertView: View, parent: ViewGroup
-    ): View {
+    override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?, p3: ViewGroup?): View {
         val headerTitle = getGroup(groupPosition) as String
-        val lblListHeader = convertView.findViewById<View>(R.id.lblListHeader) as TextView
+        var convertViewGroup = convertView
+        if (convertViewGroup == null) {
+            convertViewGroup = this.context.layoutInflater.inflate(R.layout.faq_group, null)
+        }
+
+        val lblListHeader = convertViewGroup?.findViewById<View>(R.id.lblListHeader) as TextView
         lblListHeader.setTypeface(null, Typeface.BOLD)
         lblListHeader.text = headerTitle
-        return convertView
+        return convertViewGroup!!
     }
 
     override fun hasStableIds(): Boolean {

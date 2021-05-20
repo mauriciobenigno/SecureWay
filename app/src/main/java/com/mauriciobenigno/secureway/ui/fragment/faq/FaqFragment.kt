@@ -1,30 +1,19 @@
 package com.mauriciobenigno.secureway.ui.fragment.faq
 
-import android.app.Activity
-import android.app.ProgressDialog
-import android.location.Address
-import android.location.Geocoder
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ExpandableListView
-import android.widget.Toast
-import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.model.*
-import com.mauriciobenigno.secureway.ui.adapter.AdjetivoAdapter
 import com.mauriciobenigno.secureway.ui.adapter.FaqAdapter
-import com.mauriciobenigno.secureway.util.DateUtils
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.find
 import org.jetbrains.anko.support.v4.runOnUiThread
-import org.jetbrains.anko.uiThread
+import java.lang.Exception
 import java.util.*
 
 
@@ -45,11 +34,9 @@ class FaqFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView: View = inflater.inflate(R.layout.report_fragment, container, false)
-
+        val rootView: View = inflater.inflate(R.layout.faq_list_fragment, container, false)
 
         expandableListView = rootView.findViewById(R.id.listFaq)
-
 
         return rootView
     }
@@ -59,14 +46,61 @@ class FaqFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(FaqViewModel::class.java)
 
         doAsync {
-            val listTitulos = viewModel.getTitulosFAQ()
-            val listConteudo = viewModel.getConteudoFAQ()
+            //val listTitulos = viewModel.getTitulosFAQ()
+            //val listConteudo = viewModel.getConteudoFAQ()
+            val listDataHeader: List<String>
+            val listDataChild: HashMap<String, List<String>>
+
+            listDataHeader = ArrayList<String>()
+            listDataChild = HashMap<String, List<String>>()
+
+            // Adding child data
+            listDataHeader.add("Top 250")
+            listDataHeader.add("Now Showing")
+            listDataHeader.add("Coming Soon..")
+
+            // Adding child data
+            val top250: MutableList<String> = ArrayList()
+            top250.add("The Shawshank Redemption")
+            top250.add("The Godfather")
+            top250.add("The Godfather: Part II")
+            top250.add("Pulp Fiction")
+            top250.add("The Good, the Bad and the Ugly")
+            top250.add("The Dark Knight")
+            top250.add("12 Angry Men")
+            val nowShowing: MutableList<String> = ArrayList()
+            nowShowing.add("The Conjuring")
+            nowShowing.add("Despicable Me 2")
+            nowShowing.add("Turbo")
+            nowShowing.add("Grown Ups 2")
+            nowShowing.add("Red 2")
+            nowShowing.add("The Wolverine")
+            val comingSoon: MutableList<String> = ArrayList()
+            comingSoon.add("2 Guns")
+            comingSoon.add("The Smurfs 2")
+            comingSoon.add("The Spectacular Now")
+            comingSoon.add("The Canyons")
+            comingSoon.add("Europa Report")
+            listDataChild.put(listDataHeader.get(0), top250) // Header, Child data
+            listDataChild.put(listDataHeader.get(1), nowShowing)
+            listDataChild.put(listDataHeader.get(2), comingSoon)
+
 
             runOnUiThread {
-                adapter = FaqAdapter(listTitulos, listConteudo)
+                //adapter = FaqAdapter(listTitulos, listConteudo)
+                adapter = FaqAdapter(requireContext(),listDataHeader, listDataChild)
                 /*if( listaMarcados.size > 0)
                     adapter!!.setListMarcados(listaMarcados)*/
-                expandableListView?.adapter = adapter
+
+                try {
+                    expandableListView?.setAdapter(adapter)
+                }
+                catch (e: Exception){
+                    e?.message?.let {
+                        Log.e("teste", it)
+                    }
+                }
+
             }
         }
 

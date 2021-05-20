@@ -42,6 +42,8 @@ class AppRepository(context: Context) {
 
     fun insertAllReports(reports: List<Report>) = database.Dao().insertAllReports(reports)
 
+    fun getAllFaq() = database.Dao().getAllFaq()
+
     //fun getZonasByLocation(Coo: Long) = database.Dao().getZonaById(zona_id)
 
     fun getHeatMapData(): ArrayList<WeightedLatLng> {
@@ -231,6 +233,33 @@ class AppRepository(context: Context) {
                         resultado?.let { zonas ->
                             doAsync {
                                 database.Dao().insertAllZonas(zonas)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e("ErroAPI", e.message!!)
+                    }
+                }
+            }
+        })
+    }
+
+    fun fetchFaqFromServer() {
+        val request = ApiService.getEndpoints()
+        request.getAllFaq().enqueue(object : Callback<List<Faq>> {
+            override fun onFailure(call: Call<List<Faq>>, t: Throwable) {
+                Log.wtf("Falha", "Requisição Falhou!")
+            }
+
+            override fun onResponse(
+                call: Call<List<Faq>>,
+                response: Response<List<Faq>>
+            ) {
+                if (response.code() == 200) {
+                    val resultado = response.body()
+                    try {
+                        resultado?.let { faqs ->
+                            doAsync {
+                                database.Dao().insertAllFaq(faqs)
                             }
                         }
                     } catch (e: Exception) {

@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/ll_geral_report_actions"
+            android:id="@+id/ll_list_faq"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="vertical"
