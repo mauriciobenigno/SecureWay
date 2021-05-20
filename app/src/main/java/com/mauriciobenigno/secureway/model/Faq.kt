@@ -9,7 +9,7 @@ import java.io.Serializable
 data class Faq (
     @ColumnInfo(name = "id_faq")
     @PrimaryKey(autoGenerate = false)
-    var id_zona: Long,
+    var id_faq: Long,
     @ColumnInfo(name = "titulo")
     var titulo: String,
     @ColumnInfo(name = "descricao")

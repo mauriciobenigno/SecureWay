@@ -6,18 +6,20 @@ import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
 import com.mauriciobenigno.secureway.R
+import com.mauriciobenigno.secureway.model.Faq
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import org.jetbrains.anko.layoutInflater
 import java.util.*
 
 
 class FaqAdapter  internal constructor(
     private val context: Context,
-    private val _listDataHeader: List<String>,
-    private val _listDataChild: HashMap<String, List<String>>
+    private val _listDataHeader: List<Faq>,
+    private val _listDataChild: HashMap<Long, List<Faq>>
 ) : BaseExpandableListAdapter(){
 
-    override fun getChild(groupPosition: Int, childPosititon: Int): String? {
-        return _listDataChild[_listDataHeader[groupPosition]]?.get(childPosititon)
+    override fun getChild(groupPosition: Int, childPosititon: Int): Faq? {
+        return _listDataChild[_listDataHeader[groupPosition].id_faq]?.get(childPosititon)
     }
 
     override fun getChildId(groupPosition: Int, childPosition: Int): Long {
@@ -29,17 +31,20 @@ class FaqAdapter  internal constructor(
         isLastChild: Boolean, convertView: View?, parent: ViewGroup
     ): View {
         var convertViewChild = convertView
-        val childText = getChild(groupPosition, childPosition) as String
         if (convertViewChild == null) {
             convertViewChild = this.context.layoutInflater.inflate(R.layout.faq_item, null)
         }
-        val txtListChild = convertViewChild?.findViewById<View>(R.id.tvDescricaoFaq) as TextView
-        txtListChild.text = childText
+
+        val faqDetails = getChild(groupPosition, childPosition) as Faq
+
+        val txtDescricao = convertViewChild?.findViewById<View>(R.id.tvDescricaoFaq) as TextView
+        txtDescricao.text = faqDetails.descricao
+
         return convertViewChild!!
     }
 
     override fun getChildrenCount(groupPosition: Int): Int {
-        return _listDataChild[_listDataHeader[groupPosition]]!!.size
+        return 1
     }
 
     override fun getGroup(groupPosition: Int): Any {
@@ -55,7 +60,7 @@ class FaqAdapter  internal constructor(
     }
 
     override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?, p3: ViewGroup?): View {
-        val headerTitle = getGroup(groupPosition) as String
+        val faqTitle = getGroup(groupPosition) as Faq
         var convertViewGroup = convertView
         if (convertViewGroup == null) {
             convertViewGroup = this.context.layoutInflater.inflate(R.layout.faq_group, null)
@@ -63,7 +68,7 @@ class FaqAdapter  internal constructor(
 
         val lblListHeader = convertViewGroup?.findViewById<View>(R.id.lblListHeader) as TextView
         lblListHeader.setTypeface(null, Typeface.BOLD)
-        lblListHeader.text = headerTitle
+        lblListHeader.text = faqTitle.titulo
         return convertViewGroup!!
     }
 
