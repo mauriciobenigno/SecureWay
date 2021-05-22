@@ -7,7 +7,6 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.model.Faq
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import org.jetbrains.anko.layoutInflater
 import java.util.*
 
