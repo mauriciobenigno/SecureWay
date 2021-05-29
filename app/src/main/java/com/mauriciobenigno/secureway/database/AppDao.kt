@@ -31,8 +31,14 @@ interface AppDao {
     @Query("select * from sw_zona")
     fun getAllZonas() : List<Zona>
 
-    @Query("select * from sw_zona where id_zona = :zona_id limit 1")
+    @Query("select * from sw_zona where  id_zona = :zona_id limit 1")
     fun getZonaById(zona_id: Long) : Zona?
+
+    @Query("select * from sw_zona where densidade >= 400")
+    fun getDangerZones() : LiveData<List<Zona>>
+
+    @Query("select * from sw_zona where densidade >= 400")
+    fun getDangerZonesBackground() : List<Zona>
 
     //@Query("select * from sw_zona where id_zona = :zona_id limit 1")
     @Query("SELECT * FROM sw_zona ORDER BY ((:latitude-sw_zona.coordenada_x)*(:latitude-sw_zona.coordenada_y)) + ((:longitude - sw_zona.coordenada_x)*(:longitude - sw_zona.coordenada_y)) ASC LIMIT 1")

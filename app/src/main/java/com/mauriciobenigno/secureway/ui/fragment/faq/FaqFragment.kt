@@ -34,7 +34,7 @@ class FaqFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView: View = inflater.inflate(R.layout.faq_list_fragment, container, false)
+        val rootView: View = inflater.inflate(R.layout.fragment_faq, container, false)
 
         expandableListView = rootView.findViewById(R.id.listFaq)
 

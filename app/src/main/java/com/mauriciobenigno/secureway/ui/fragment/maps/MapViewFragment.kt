@@ -54,6 +54,7 @@ class MapViewFragment : Fragment() {
     private var mLocationManager: LocationManager? = null
     private var mLocation: Location? = null
     private var mAddress: Address? = null
+    private var mTarget: LatLng? = null
     private var searchView: SearchView? = null
     private var fabButton: ExtendedFloatingActionButton? = null
     private var marker: Marker? = null
@@ -100,10 +101,10 @@ class MapViewFragment : Fragment() {
             googleMap!!.setOnCameraIdleListener(object : GoogleMap.OnCameraIdleListener {
                 override fun onCameraIdle() {
                     if (mMarkerAtivo) {
-                        val target: LatLng = googleMap!!.cameraPosition.target
+                        mTarget = googleMap!!.cameraPosition.target
                         try{
                             // Atualizando lugar
-                            mAddress = Geocoder(requireActivity().applicationContext).getFromLocation(target.latitude,target.longitude, 1)[0]
+                            mAddress = Geocoder(requireActivity().applicationContext).getFromLocation(mTarget!!.latitude,mTarget!!.longitude, 1)[0]
                         }
                         catch (e: Exception){
                             // Não está num endereço válido
@@ -116,13 +117,13 @@ class MapViewFragment : Fragment() {
                         if (marker != null)
                             marker!!.remove()
 
-                        marker = googleMap!!.addMarker(MarkerOptions().position(target).draggable(true))
+                        marker = googleMap!!.addMarker(MarkerOptions().position(mTarget!!).draggable(true))
 
                         doAsync {
                             // Carregar a zona a partir da coordenada
 
                             if (viewModel != null){
-                                val zona = viewModel.getZonaByLocation(Coordenada(target.latitude, target.longitude)) as Zona?
+                                val zona = viewModel.getZonaByLocation(Coordenada(mTarget!!.latitude, mTarget!!.longitude)) as Zona?
 
                                 uiThread {
                                     try{
@@ -145,14 +146,6 @@ class MapViewFragment : Fragment() {
                     }
                 }
             })
-
-            /*googleMap!!.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener {
-                override fun onMarkerClick(p0: Marker?): Boolean {
-                    Toast.makeText(context, "VOCÊ CLICOU NUMA ZONA", Toast.LENGTH_LONG).show()
-                    return true
-                }
-            })*/
-
         }
 
         mMapView!!.onResume()
@@ -178,9 +171,7 @@ class MapViewFragment : Fragment() {
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle("Você precisa logar para reportar!")
                     .setMessage("Deseja entrar?")
-                    .setNegativeButton("Cancelar") { _, _ ->
-                        // Respond to neutral button press
-                    }
+                    .setNegativeButton("Cancelar", null)
                     .setPositiveButton("Entrar") { _, _ ->
                         val intent = Intent(requireContext(), AutenticacaoActivity::class.java)
                         startActivity(intent)
@@ -229,20 +220,15 @@ class MapViewFragment : Fragment() {
                 }
 
                 val builder = AlertDialog.Builder(requireContext())
-                builder.setTitle("Reportar o seguinte endereço? ")
+                builder.setTitle("Reportar o seguinte endereço aproximado? ")
                     .setMessage(Html.fromHtml(descricao))
                     .setNegativeButton("Não", null)
                     .setPositiveButton("Sim") { _, _ ->
                         val intent = Intent(requireContext(), ReportActivity::class.java)
+                        mAddress?.latitude = mTarget?.latitude!!
+                        mAddress?.longitude = mTarget?.longitude!!
                         intent.putExtra("endereco", mAddress)
                         requireActivity().startActivityForResult(intent, REQUEST_REPORT_CREATE)
-
-                        doAsync {
-                            /*viewModel.saveZonaOnServer(Zona(0,mAddress!!.latitude,mAddress!!.longitude,500.0))
-                            uiThread {
-                                loadHeatMap(false)
-                            }*/
-                        }
                     }
                 val alert = builder.create()
                 alert.show()
@@ -289,7 +275,7 @@ class MapViewFragment : Fragment() {
                 if (location != null) {
                     mLocation = getLastKnownLocation()
                     mAddress = Geocoder(requireActivity().applicationContext).getFromLocation(mLocation!!.latitude, mLocation!!.longitude,1)[0]
-                    googleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 15.0f))
+                    googleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 20.0f))
                 }
 
             }
@@ -337,7 +323,7 @@ class MapViewFragment : Fragment() {
     }
 
 
-    fun loadHeatMap(moveToIndia: Boolean = true){
+    fun loadHeatMap(moveToUser: Boolean = true){
         try {
             doAsync {
                 // For showing a move to my location button
@@ -362,16 +348,19 @@ class MapViewFragment : Fragment() {
 
                 val heatMapProvider = HeatmapTileProvider.Builder()
                     .weightedData(data) // load our weighted data
-                    .radius(50) // optional, in pixels, can be anything between 20 and 50
+                    .radius(30) // optional, in pixels, can be anything between 20 and 50
                     .opacity(0.9)
                     //.gradient(gradient)
                     .maxIntensity(1000.0) // set the maximum intensity
                     .build()
                 uiThread {
                     googleMap!!.addTileOverlay(TileOverlayOptions().tileProvider(heatMapProvider))
-                    if(moveToIndia){
-                        val indiaLatLng = LatLng(20.5937, 78.9629)
-                        googleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(indiaLatLng, 5f))
+                    if(moveToUser){
+                        val location = getLastKnownLocation()
+                        location?.let {
+                            val userLatLng = LatLng(location.latitude, location.longitude)
+                            googleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 20.0f))
+                        }
                     }
 
                 }

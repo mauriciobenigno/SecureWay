@@ -40,6 +40,10 @@ class AppRepository(context: Context) {
 
     fun getZonaById(zona_id: Long) = database.Dao().getZonaById(zona_id)
 
+    fun getDangerZones() = database.Dao().getDangerZones()
+
+    fun getDangerZonesBackground() = database.Dao().getDangerZonesBackground()
+
     fun insertAllReports(reports: List<Report>) = database.Dao().insertAllReports(reports)
 
     fun getAllFaq() = database.Dao().getAllFaq()

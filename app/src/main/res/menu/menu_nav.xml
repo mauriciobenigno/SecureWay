@@ -21,9 +21,9 @@
                 android:icon="@drawable/ic_education"
                 android:title="Tutorial/FAQ" />
             <item
-                android:id="@+id/nav_item_five"
+                android:id="@+id/nav_item_notice"
                 android:icon="@drawable/ic_notification"
-                android:title="Avisos" />
+                android:title="Notificações" />
         </menu>
     </item>
 

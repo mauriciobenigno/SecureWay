@@ -46,7 +46,27 @@
             android:screenOrientation="portrait"/>
 
         <activity android:name=".ui.activity.tutorial.TutorialActivity"
-            android:label="My Custom AppIntro" />
+            android:label="My Custom AppIntro"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
+        <service
+            android:name=".services.GeofenceTransitionsJobIntentService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:foregroundServiceType="location"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver
+            android:name=".services.GeofenceBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.mauriciobenigno.secureway.services.GeoFenceBroadcastReceiver.ACTION_PROCESS_LOCATION" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.mauriciobenigno.secureway.services.StartJobIntentServiceReceiver"
+            android:enabled="true">
+        </receiver>
     </application>
 
 </manifest>

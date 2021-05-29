@@ -34,7 +34,12 @@ class TutorialActivity : AppIntro2()  {
         slideFinalizar()
 
         // configura permissão necessária
-        askForPermissions(permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), slideNumber = 3, required = true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            askForPermissions(permissions = arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION), slideNumber = 3, required = true)
+        }
+        else{
+            askForPermissions(permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), slideNumber = 3, required = true)
+        }
 
         // configura esquema de cores e status bar
         showStatusBar(true)

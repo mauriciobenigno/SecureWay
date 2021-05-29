@@ -170,11 +170,8 @@ class ReportFragment : Fragment() {
                     }
                 }
                 catch (e: Exception){
-                    // Erro, futuramente colocar tela de erro
-                    val teste = 0
+                    Toast.makeText(requireContext(), "Ocorreu um erro ao tentar reportar.",Toast.LENGTH_LONG).show()
                 }
-
-
 
             } else {
                 Toast.makeText(requireContext(), "Marque uma opção em cada dupla",Toast.LENGTH_LONG).show()

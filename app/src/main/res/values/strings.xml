@@ -16,5 +16,9 @@
     <string name="app_intro_back_button">Voltar</string>
     <string name="app_intro_done_button">Pronto</string>
     <string name="app_intro_image_content_description">Gráfico</string>
+    <string name="label_notice">O serviço de aviso foi criado para te alertar quando entrar em uma zona perigosa.
+    Ao entrar em uma zona perigosa o SecureWay irá emitir uma notificação avisando.
+
+    Aviso: Para que o serviço de notificação funcione adequadamente, permissões de acesso a localização o tempo todo precisa esta habilitadas.</string>
 
 </resources>
