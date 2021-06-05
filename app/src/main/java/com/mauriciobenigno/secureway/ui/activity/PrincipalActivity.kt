@@ -2,10 +2,15 @@ package com.mauriciobenigno.secureway.ui.activity
 
 import android.R.attr
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -30,8 +35,9 @@ import com.mauriciobenigno.secureway.ui.fragment.report.ReportListFragment
 class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     companion object {
-        var REQUEST_REPORT_CREATE = 998;
-        var REQUEST_REPORT_EDIT = 999;
+        var REQUEST_REPORT_CREATE = 998
+        var REQUEST_REPORT_EDIT = 999
+        val REQUEST_IMAGE_CAPTURE = 1000
     }
 
     private var toolbar: Toolbar? = null
@@ -43,8 +49,12 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     // Drawer
     private var ll_logado: LinearLayout? = null
     private var ll_deslogado: LinearLayout? = null
+    private var img_perfil: ImageView? = null
     private var tv_drawer_apelido: TextView? = null
     private var tv_drawer_numero: TextView? = null
+
+    // URI para foto de perfil
+    lateinit var currentPhotoPath: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,8 +87,17 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             startActivity(intent)
         }
 
+        img_perfil = header.findViewById<View>(R.id.img_perfil) as ImageView
         tv_drawer_apelido = header.findViewById<View>(R.id.tv_drawer_apelido) as TextView
         tv_drawer_numero = header.findViewById<View>(R.id.tv_drawer_numero) as TextView
+
+        img_perfil?.setOnClickListener {
+            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                takePictureIntent.resolveActivity(packageManager)?.also {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                }
+            }
+        }
 
         // Inicializar Framents
         fragmentMap = MapViewFragment()
@@ -103,6 +122,20 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             ll_deslogado?.visibility  = View.GONE
             tv_drawer_apelido!!.text = Firebase.auth.currentUser!!.displayName
             tv_drawer_numero!!.text = Firebase.auth.currentUser!!.phoneNumber
+
+            if(Firebase.auth.currentUser!!.photoUrl != null && Firebase.auth.currentUser!!.photoUrl.toString().isNotEmpty() ){;
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                    val bitmap = MediaStore.Images.Media.getBitmap(
+                        this.contentResolver,
+                        Firebase.auth.currentUser!!.photoUrl
+                    )
+                    img_perfil!!.setImageBitmap(bitmap)
+                } else {
+                    val source = ImageDecoder.createSource(this.contentResolver, Firebase.auth.currentUser!!.photoUrl!!)
+                    val bitmap = ImageDecoder.decodeBitmap(source)
+                    img_perfil!!.setImageBitmap(bitmap)
+                }
+            }
         } else {
             ll_logado?.visibility  = View.GONE
             ll_deslogado?.visibility  = View.VISIBLE
@@ -175,6 +208,10 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         }
         else  if (requestCode === REQUEST_REPORT_EDIT && resultCode === RESULT_OK) {
             (fragmentAtual as ReportListFragment).configurarAdapter()
+        }
+        else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            img_perfil?.setImageBitmap(imageBitmap)
         }
     }
 
