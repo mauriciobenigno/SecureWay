@@ -35,6 +35,7 @@ import com.google.firebase.ktx.Firebase
 import com.mauriciobenigno.secureway.R
 import com.mauriciobenigno.secureway.ui.MapViewFragment
 import com.mauriciobenigno.secureway.ui.activity.autenticacao.AutenticacaoActivity
+import com.mauriciobenigno.secureway.ui.fragment.creditos.CreditosFragment
 import com.mauriciobenigno.secureway.ui.fragment.faq.FaqFragment
 import com.mauriciobenigno.secureway.ui.fragment.report.ReportListFragment
 import org.jetbrains.anko.doAsync
@@ -168,8 +169,13 @@ class PrincipalActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 ft.replace(R.id.container_frame, fragmentAtual!!)
                 ft.commit()
             }
+            R.id.nav_item_info -> {
+                fragmentAtual = CreditosFragment()
+                val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+                ft.replace(R.id.container_frame, fragmentAtual!!)
+                ft.commit()
+            }
             R.id.nav_item_sair_conta -> {
-
                 if(Firebase.auth.currentUser != null){
                     Firebase.auth.signOut()
                     configurarContaDrawer()
